@@ -90,6 +90,35 @@ app.get("/health", (req, res) => {
   });
 });
 
+// Debug endpoint to list files in dist directory
+app.get("/debug/files", (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  
+  try {
+    const distPath = path.join(__dirname, "dist");
+    const files = fs.readdirSync(distPath);
+    const fileStats = files.map(file => {
+      const filePath = path.join(distPath, file);
+      const stats = fs.statSync(filePath);
+      return {
+        name: file,
+        size: stats.size,
+        isDirectory: stats.isDirectory(),
+        modified: stats.mtime
+      };
+    });
+    
+    res.json({
+      distPath: distPath,
+      files: fileStats,
+      logoFiles: files.filter(f => f.includes('logo') || f.includes('Logo'))
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Handle client-side routing - serve index.html for all routes
 app.get("*", (req, res) => {
   console.log(`Serving index.html for route: ${req.url}`);
