@@ -23,7 +23,7 @@ interface ConversationEntry {
 const InterviewSession: React.FC = () => {
   const navigate = useNavigate();
   const { state } = useLocation() as any;
-  const { userName, meetingPurpose, generalInfo, interviewType } = state || {};
+  const { userName, meetingPurpose, generalInfo, interviewType, selectedLanguage } = state || {};
   const { user, setUser } = useAuth();
 
   const [status, setStatus] = useState("Ready to start");
@@ -268,6 +268,8 @@ const InterviewSession: React.FC = () => {
     const formData = new FormData();
     formData.append("file", audioBlob, "audio.webm");
     formData.append("model", "whisper-1");
+    // Set the language for transcription to match the selected language
+    formData.append("language", selectedLanguage);
     const response = await fetch(
       "https://api.openai.com/v1/audio/transcriptions",
       {
@@ -286,7 +288,20 @@ const InterviewSession: React.FC = () => {
     info: string
   ): Promise<string> => {
     const personalContext = (info || "").trim();
-    const prompt = `You are the candidate being interviewed. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCANDIDATE DETAILS (optional):\n${
+    const languageName = selectedLanguage === "en" ? "English" : 
+                        selectedLanguage === "it" ? "Italian" : 
+                        selectedLanguage === "fr" ? "French" : 
+                        selectedLanguage === "es" ? "Spanish" : 
+                        selectedLanguage === "de" ? "German" : 
+                        selectedLanguage === "pt" ? "Portuguese" :
+                        selectedLanguage === "ru" ? "Russian" :
+                        selectedLanguage === "ja" ? "Japanese" :
+                        selectedLanguage === "ko" ? "Korean" :
+                        selectedLanguage === "zh" ? "Chinese" :
+                        selectedLanguage === "ar" ? "Arabic" :
+                        selectedLanguage === "hi" ? "Hindi" : "English";
+    
+    const prompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
       personalContext || "<none>"
     }\n\nInterviewer question: "${question}"`;
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -314,7 +329,20 @@ const InterviewSession: React.FC = () => {
     onToken: (chunk: string) => void
   ): Promise<void> => {
     const personalContext = (info || "").trim();
-    const prompt = `You are the candidate being interviewed. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCANDIDATE DETAILS (optional):\n${
+    const languageName = selectedLanguage === "en" ? "English" : 
+                        selectedLanguage === "it" ? "Italian" : 
+                        selectedLanguage === "fr" ? "French" : 
+                        selectedLanguage === "es" ? "Spanish" : 
+                        selectedLanguage === "de" ? "German" : 
+                        selectedLanguage === "pt" ? "Portuguese" :
+                        selectedLanguage === "ru" ? "Russian" :
+                        selectedLanguage === "ja" ? "Japanese" :
+                        selectedLanguage === "ko" ? "Korean" :
+                        selectedLanguage === "zh" ? "Chinese" :
+                        selectedLanguage === "ar" ? "Arabic" :
+                        selectedLanguage === "hi" ? "Hindi" : "English";
+    
+    const prompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
       personalContext || "<none>"
     }\n\nInterviewer question: "${question}"`;
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
