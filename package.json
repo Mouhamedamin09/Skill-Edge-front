@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:prod": "npm run clean && npm install --legacy-peer-deps && npm run build",
+    "build:prod": "npm run clean && npm install --legacy-peer-deps && npm run build && node copy-assets.cjs",
     "clean": "rimraf node_modules package-lock.json dist",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
     "start": "node server.cjs"
