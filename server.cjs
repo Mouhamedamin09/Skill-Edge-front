@@ -11,63 +11,70 @@ app.use((req, res, next) => {
 
 // Debug static file serving
 app.use((req, res, next) => {
-  if (req.url.includes('.png') || req.url.includes('.jpg') || req.url.includes('.jpeg') || req.url.includes('.gif')) {
+  if (
+    req.url.includes(".png") ||
+    req.url.includes(".jpg") ||
+    req.url.includes(".jpeg") ||
+    req.url.includes(".gif")
+  ) {
     console.log(`📸 Static file request: ${req.url}`);
   }
   next();
 });
 
 // Serve static files from the dist directory with proper MIME types
-app.use(express.static(path.join(__dirname, "dist"), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.png')) {
-      res.setHeader('Content-Type', 'image/png');
-      res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
-    } else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) {
-      res.setHeader('Content-Type', 'image/jpeg');
-      res.setHeader('Cache-Control', 'public, max-age=31536000');
-    } else if (path.endsWith('.gif')) {
-      res.setHeader('Content-Type', 'image/gif');
-      res.setHeader('Cache-Control', 'public, max-age=31536000');
-    }
-  }
-}));
+app.use(
+  express.static(path.join(__dirname, "dist"), {
+    setHeaders: (res, path) => {
+      if (path.endsWith(".png")) {
+        res.setHeader("Content-Type", "image/png");
+        res.setHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+      } else if (path.endsWith(".jpg") || path.endsWith(".jpeg")) {
+        res.setHeader("Content-Type", "image/jpeg");
+        res.setHeader("Cache-Control", "public, max-age=31536000");
+      } else if (path.endsWith(".gif")) {
+        res.setHeader("Content-Type", "image/gif");
+        res.setHeader("Cache-Control", "public, max-age=31536000");
+      }
+    },
+  })
+);
 
 // Specific route for logo files to ensure they're served correctly
-app.get('/skillEdgeLogo.png', (req, res) => {
-  console.log('🎯 Logo request received:', req.url);
+app.get("/skillEdgeLogo.png", (req, res) => {
+  console.log("🎯 Logo request received:", req.url);
   const logoPath = path.join(__dirname, "dist", "skillEdgeLogo.png");
-  console.log('📁 Logo path:', logoPath);
-  
+  console.log("📁 Logo path:", logoPath);
+
   // Set proper headers
-  res.setHeader('Content-Type', 'image/png');
-  res.setHeader('Cache-Control', 'public, max-age=31536000');
-  
+  res.setHeader("Content-Type", "image/png");
+  res.setHeader("Cache-Control", "public, max-age=31536000");
+
   res.sendFile(logoPath, (err) => {
     if (err) {
-      console.error('❌ Error serving logo:', err);
-      res.status(404).send('Logo not found');
+      console.error("❌ Error serving logo:", err);
+      res.status(404).send("Logo not found");
     } else {
-      console.log('✅ Logo served successfully');
+      console.log("✅ Logo served successfully");
     }
   });
 });
 
-app.get('/skilledge-tab-logo.png', (req, res) => {
-  console.log('🎯 Tab logo request received:', req.url);
+app.get("/skilledge-tab-logo.png", (req, res) => {
+  console.log("🎯 Tab logo request received:", req.url);
   const logoPath = path.join(__dirname, "dist", "skilledge-tab-logo.png");
-  console.log('📁 Tab logo path:', logoPath);
-  
+  console.log("📁 Tab logo path:", logoPath);
+
   // Set proper headers
-  res.setHeader('Content-Type', 'image/png');
-  res.setHeader('Cache-Control', 'public, max-age=31536000');
-  
+  res.setHeader("Content-Type", "image/png");
+  res.setHeader("Cache-Control", "public, max-age=31536000");
+
   res.sendFile(logoPath, (err) => {
     if (err) {
-      console.error('❌ Error serving tab logo:', err);
-      res.status(404).send('Tab logo not found');
+      console.error("❌ Error serving tab logo:", err);
+      res.status(404).send("Tab logo not found");
     } else {
-      console.log('✅ Tab logo served successfully');
+      console.log("✅ Tab logo served successfully");
     }
   });
 });
@@ -81,12 +88,6 @@ app.get("/health", (req, res) => {
     uptime: process.uptime(),
     port: PORT,
   });
-});
-
-// Logo test endpoint
-app.get("/test-logo", (req, res) => {
-  console.log("Logo test page requested");
-  res.sendFile(path.join(__dirname, "test-logo.html"));
 });
 
 // Handle client-side routing - serve index.html for all routes
