@@ -11,10 +11,14 @@ export interface User {
     plan: string;
     startDate: string;
     endDate: string;
+    minutesLeft: number;
+    tokens: number;
+    status: string;
   };
   usage: {
     minutesUsed: number;
     minutesLimit: number;
+    totalMinutesUsed: number;
   };
 }
 
