@@ -23,7 +23,13 @@ interface ConversationEntry {
 const InterviewSession: React.FC = () => {
   const navigate = useNavigate();
   const { state } = useLocation() as any;
-  const { userName, meetingPurpose, generalInfo, interviewType, selectedLanguage } = state || {};
+  const {
+    userName,
+    meetingPurpose,
+    generalInfo,
+    interviewType,
+    selectedLanguage,
+  } = state || {};
   const { user, setUser } = useAuth();
 
   const [status, setStatus] = useState("Ready to start");
@@ -212,6 +218,8 @@ const InterviewSession: React.FC = () => {
         answer: "",
       };
       setConversationHistory((p) => [...p, entry]);
+      // Auto-scroll when new question is added
+      setTimeout(scrollToBottom, 100);
       try {
         await generateResponseStream(text, generalInfo || "", (chunk) => {
           streamed += chunk;
@@ -221,6 +229,8 @@ const InterviewSession: React.FC = () => {
             if (idx !== -1) copy[idx] = { ...copy[idx], answer: streamed };
             return copy;
           });
+          // Auto-scroll during streaming
+          setTimeout(scrollToBottom, 100);
         });
       } catch {
         const answer = await generateResponse(text, generalInfo || "");
@@ -288,19 +298,33 @@ const InterviewSession: React.FC = () => {
     info: string
   ): Promise<string> => {
     const personalContext = (info || "").trim();
-    const languageName = selectedLanguage === "en" ? "English" : 
-                        selectedLanguage === "it" ? "Italian" : 
-                        selectedLanguage === "fr" ? "French" : 
-                        selectedLanguage === "es" ? "Spanish" : 
-                        selectedLanguage === "de" ? "German" : 
-                        selectedLanguage === "pt" ? "Portuguese" :
-                        selectedLanguage === "ru" ? "Russian" :
-                        selectedLanguage === "ja" ? "Japanese" :
-                        selectedLanguage === "ko" ? "Korean" :
-                        selectedLanguage === "zh" ? "Chinese" :
-                        selectedLanguage === "ar" ? "Arabic" :
-                        selectedLanguage === "hi" ? "Hindi" : "English";
-    
+    const languageName =
+      selectedLanguage === "en"
+        ? "English"
+        : selectedLanguage === "it"
+        ? "Italian"
+        : selectedLanguage === "fr"
+        ? "French"
+        : selectedLanguage === "es"
+        ? "Spanish"
+        : selectedLanguage === "de"
+        ? "German"
+        : selectedLanguage === "pt"
+        ? "Portuguese"
+        : selectedLanguage === "ru"
+        ? "Russian"
+        : selectedLanguage === "ja"
+        ? "Japanese"
+        : selectedLanguage === "ko"
+        ? "Korean"
+        : selectedLanguage === "zh"
+        ? "Chinese"
+        : selectedLanguage === "ar"
+        ? "Arabic"
+        : selectedLanguage === "hi"
+        ? "Hindi"
+        : "English";
+
     const prompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
       personalContext || "<none>"
     }\n\nInterviewer question: "${question}"`;
@@ -329,19 +353,33 @@ const InterviewSession: React.FC = () => {
     onToken: (chunk: string) => void
   ): Promise<void> => {
     const personalContext = (info || "").trim();
-    const languageName = selectedLanguage === "en" ? "English" : 
-                        selectedLanguage === "it" ? "Italian" : 
-                        selectedLanguage === "fr" ? "French" : 
-                        selectedLanguage === "es" ? "Spanish" : 
-                        selectedLanguage === "de" ? "German" : 
-                        selectedLanguage === "pt" ? "Portuguese" :
-                        selectedLanguage === "ru" ? "Russian" :
-                        selectedLanguage === "ja" ? "Japanese" :
-                        selectedLanguage === "ko" ? "Korean" :
-                        selectedLanguage === "zh" ? "Chinese" :
-                        selectedLanguage === "ar" ? "Arabic" :
-                        selectedLanguage === "hi" ? "Hindi" : "English";
-    
+    const languageName =
+      selectedLanguage === "en"
+        ? "English"
+        : selectedLanguage === "it"
+        ? "Italian"
+        : selectedLanguage === "fr"
+        ? "French"
+        : selectedLanguage === "es"
+        ? "Spanish"
+        : selectedLanguage === "de"
+        ? "German"
+        : selectedLanguage === "pt"
+        ? "Portuguese"
+        : selectedLanguage === "ru"
+        ? "Russian"
+        : selectedLanguage === "ja"
+        ? "Japanese"
+        : selectedLanguage === "ko"
+        ? "Korean"
+        : selectedLanguage === "zh"
+        ? "Chinese"
+        : selectedLanguage === "ar"
+        ? "Arabic"
+        : selectedLanguage === "hi"
+        ? "Hindi"
+        : "English";
+
     const prompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
       personalContext || "<none>"
     }\n\nInterviewer question: "${question}"`;
@@ -393,6 +431,16 @@ const InterviewSession: React.FC = () => {
       });
     }
   }, [conversationHistory]);
+
+  // Auto-scroll during streaming responses
+  const scrollToBottom = () => {
+    if (bottomAnchorRef.current) {
+      bottomAnchorRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  };
 
   return (
     <div className="interview-page">
@@ -474,6 +522,8 @@ const InterviewSession: React.FC = () => {
                   </div>
                 ))
               )}
+              {/* Auto-scroll anchor */}
+              <div ref={bottomAnchorRef} />
             </div>
           </div>
 
