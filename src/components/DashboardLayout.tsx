@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import { skillEdgeLogo } from "../assets/logos";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -60,7 +61,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <img
-              src="/skillEdgeLogo.png"
+              src={skillEdgeLogo}
               alt="SkillEdge Logo"
               style={{ width: "150px", height: "75px", objectFit: "contain" }}
             />

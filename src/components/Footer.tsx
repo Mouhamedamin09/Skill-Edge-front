@@ -9,6 +9,7 @@ import {
   Linkedin,
   Github,
 } from "lucide-react";
+import { skillEdgeLogo } from "../assets/logos";
 
 const Footer = () => {
   const footerLinks = {
@@ -56,7 +57,7 @@ const Footer = () => {
           <div className="footer-brand">
             <Link to="/" className="footer-logo">
               <img
-                src="/skillEdgeLogo.png"
+                src={skillEdgeLogo}
                 alt="SkillEdge Logo"
                 style={{
                   width: "120px",

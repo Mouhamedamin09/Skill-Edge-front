@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, LogIn, User, Mic } from "lucide-react";
+import { skillEdgeLogo } from "../assets/logos";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,7 +27,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/" className="navbar-brand">
           <img
-            src="/skillEdgeLogo.png"
+            src={skillEdgeLogo}
             alt="SkillEdge Logo"
             className="navbar-logo-img"
           />
