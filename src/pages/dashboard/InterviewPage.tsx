@@ -371,10 +371,9 @@ const InterviewPage: React.FC = () => {
     // Optionally set a language: formData.append("language", "it");
 
     const response = await fetch(
-      "https://api.openai.com/v1/audio/transcriptions",
+      `${import.meta.env.VITE_API_URL}/ai/transcribe`,
       {
         method: "POST",
-        headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
         body: formData,
       }
     );
@@ -405,11 +404,10 @@ Requirements:
 - If code helps, include short snippets only when necessary
 Answer:`;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/ai/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",

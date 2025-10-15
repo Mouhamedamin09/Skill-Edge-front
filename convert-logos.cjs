@@ -49,3 +49,4 @@ export const skilledgeTabLogo = LOGO_DATA.skilledge_tab_logo_png;
 fs.writeFileSync(outputPath, tsContent);
 console.log(`📝 Written logo data to: ${outputPath}`);
 console.log("🎯 Logo conversion complete!");
+

@@ -281,10 +281,9 @@ const InterviewSession: React.FC = () => {
     // Set the language for transcription to match the selected language
     formData.append("language", selectedLanguage);
     const response = await fetch(
-      "https://api.openai.com/v1/audio/transcriptions",
+      `${import.meta.env.VITE_API_URL}/ai/transcribe`,
       {
         method: "POST",
-        headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
         body: formData,
       }
     );
@@ -383,11 +382,10 @@ const InterviewSession: React.FC = () => {
     const prompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
       personalContext || "<none>"
     }\n\nInterviewer question: "${question}"`;
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/ai/chat-stream`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
