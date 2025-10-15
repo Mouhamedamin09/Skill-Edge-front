@@ -1,0 +1,48 @@
+name: skilledge
+services:
+  - name: backend
+    source_dir: /
+    github:
+      repo: Mouhamedamin09/Skill-Edge-backend
+      branch: main
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        value: mongodb+srv://username:password@cluster.mongodb.net/skilledge?retryWrites=true&w=majority
+      - key: JWT_SECRET
+        value: your-super-secret-jwt-key-here
+      - key: OPENAI_API_KEY
+        value: your-openai-api-key
+      - key: CLIENT_URL
+        value: https://skilledge-sz5fb.ondigitalocean.app
+      - key: PORT
+        value: "8080"
+    http_port: 8080
+
+  - name: frontend
+    source_dir: /
+    github:
+      repo: Mouhamedamin09/Skill-Edge-front
+      branch: main
+    build_command: npm run build:prod
+    run_command: npm run start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3000
+    envs:
+      - key: VITE_API_URL
+        value: https://monkfish-app-nnhdy.ondigitalocean.app/api
+      - key: NODE_ENV
+        value: production
+      - key: NPM_CONFIG_LEGACY_PEER_DEPS
+        value: "true"
+      - key: PORT
+        value: "3000"
+    routes:
+      - path: /
