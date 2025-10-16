@@ -42,28 +42,16 @@ const AboutPage: React.FC = () => {
 
   const team = [
     {
-      name: "Sarah Johnson",
-      role: "CEO & Founder",
+      name: "Mohamedamin Kraiem",
+      role: "CEO & Developer",
       description:
-        "Former Google engineer with 10+ years in AI and machine learning.",
+        "Co-founder and lead developer, building innovative AI solutions for interview preparation.",
     },
     {
-      name: "Michael Chen",
-      role: "CTO",
+      name: "Mounes Barhoumi",
+      role: "Co-Founder & Financial Support",
       description:
-        "Expert in natural language processing and real-time systems.",
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Head of Product",
-      description:
-        "UX designer passionate about making technology accessible to everyone.",
-    },
-    {
-      name: "David Kim",
-      role: "Lead Engineer",
-      description:
-        "Full-stack developer specializing in scalable web applications.",
+        "Co-founder providing strategic vision and financial backing to bring SkillEdge to life.",
     },
   ];
 
