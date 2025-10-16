@@ -23,7 +23,8 @@ const BillingPage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   useEffect(() => {
     // Check for success or cancel from Stripe Checkout
@@ -37,7 +38,9 @@ const BillingPage: React.FC = () => {
         navigate("/dashboard/billing", { replace: true });
       }, 3000);
     } else if (canceled) {
-      setErrorMessage("Payment was canceled. Please try again if you'd like to upgrade.");
+      setErrorMessage(
+        "Payment was canceled. Please try again if you'd like to upgrade."
+      );
       setTimeout(() => {
         navigate("/dashboard/billing", { replace: true });
       }, 3000);
@@ -128,14 +131,17 @@ const BillingPage: React.FC = () => {
       setLoading(planId);
       setErrorMessage("");
 
-      const response = await fetch(`${API_BASE_URL}/stripe/create-checkout-session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ planId }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/stripe/create-checkout-session`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ planId }),
+        }
+      );
 
       const data = await response.json();
 
@@ -159,13 +165,16 @@ const BillingPage: React.FC = () => {
       setPortalLoading(true);
       setErrorMessage("");
 
-      const response = await fetch(`${API_BASE_URL}/stripe/create-portal-session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/stripe/create-portal-session`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       const data = await response.json();
 
@@ -234,7 +243,10 @@ const BillingPage: React.FC = () => {
           className="current-plan-section"
         >
           <div className="current-plan-card">
-            <div className="card-icon" style={{ backgroundColor: currentPlan.bgColor }}>
+            <div
+              className="card-icon"
+              style={{ backgroundColor: currentPlan.bgColor }}
+            >
               {React.createElement(currentPlan.icon, {
                 size: 32,
                 color: currentPlan.color,
@@ -246,15 +258,18 @@ const BillingPage: React.FC = () => {
                 <p>{currentPlan.description}</p>
               </div>
               <div className="plan-stats">
-                {user.subscription.plan !== "free" && daysUntilBilling !== null && (
-                  <div className="stat-item">
-                    <Calendar size={20} />
-                    <div className="stat-content">
-                      <span className="stat-label">Next Billing</span>
-                      <span className="stat-value">{daysUntilBilling} days</span>
+                {user.subscription.plan !== "free" &&
+                  daysUntilBilling !== null && (
+                    <div className="stat-item">
+                      <Calendar size={20} />
+                      <div className="stat-content">
+                        <span className="stat-label">Next Billing</span>
+                        <span className="stat-value">
+                          {daysUntilBilling} days
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 <div className="stat-item">
                   <TrendingUp size={20} />
                   <div className="stat-content">
@@ -390,9 +405,9 @@ const BillingPage: React.FC = () => {
             </div>
             <div className="info-content">
               <p>
-                Your subscription is managed securely through Stripe. You can update
-                your billing information, payment methods, view invoices, and manage
-                your subscription at any time.
+                Your subscription is managed securely through Stripe. You can
+                update your billing information, payment methods, view invoices,
+                and manage your subscription at any time.
               </p>
               <div className="info-actions">
                 <motion.button
