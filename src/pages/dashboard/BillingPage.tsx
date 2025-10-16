@@ -29,14 +29,53 @@ const BillingPage: React.FC = () => {
   useEffect(() => {
     // Check for success or cancel from Stripe Checkout
     const success = searchParams.get("success");
+    const sessionId = searchParams.get("session_id");
     const canceled = searchParams.get("canceled");
 
-    if (success) {
-      setSuccessMessage("Payment successful! Your subscription is now active.");
-      // Clear the query params after showing message
-      setTimeout(() => {
-        navigate("/dashboard/billing", { replace: true });
-      }, 3000);
+    if (success && sessionId) {
+      // Verify and activate subscription
+      const verifySession = async () => {
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/stripe/verify-session`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({ sessionId }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            setSuccessMessage(
+              "Payment successful! Your subscription is now active. Refreshing..."
+            );
+            // Reload the page to fetch updated user data
+            setTimeout(() => {
+              window.location.href = "/dashboard/billing";
+            }, 2000);
+          } else {
+            setErrorMessage(
+              data.error || "Failed to activate subscription. Please contact support."
+            );
+            setTimeout(() => {
+              navigate("/dashboard/billing", { replace: true });
+            }, 3000);
+          }
+        } catch (error) {
+          console.error("Session verification error:", error);
+          setErrorMessage("Failed to verify payment. Please contact support.");
+          setTimeout(() => {
+            navigate("/dashboard/billing", { replace: true });
+          }, 3000);
+        }
+      };
+
+      verifySession();
     } else if (canceled) {
       setErrorMessage(
         "Payment was canceled. Please try again if you'd like to upgrade."
@@ -45,7 +84,7 @@ const BillingPage: React.FC = () => {
         navigate("/dashboard/billing", { replace: true });
       }, 3000);
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, API_BASE_URL]);
 
   if (!user) return null;
 
