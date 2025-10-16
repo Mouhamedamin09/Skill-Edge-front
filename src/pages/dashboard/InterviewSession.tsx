@@ -49,10 +49,6 @@ const InterviewSession: React.FC = () => {
   const bottomAnchorRef = useRef<HTMLDivElement | null>(null);
   const stopTimerRef = useRef<number | null>(null);
 
-  const OPENAI_API_KEY = (import.meta as any).env?.VITE_OPENAI_API_KEY as
-    | string
-    | undefined;
-
   useEffect(() => {
     if (!state) navigate("/dashboard/interview");
   }, [state, navigate]);
@@ -344,11 +340,10 @@ const InterviewSession: React.FC = () => {
     // Add current question
     messages.push({ role: "user", content: question });
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/ai/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
