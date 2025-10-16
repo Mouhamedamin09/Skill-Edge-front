@@ -324,9 +324,26 @@ const InterviewSession: React.FC = () => {
         ? "Hindi"
         : "English";
 
-    const prompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
+    const systemPrompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
       personalContext || "<none>"
-    }\n\nInterviewer question: "${question}"`;
+    }`;
+
+    // Build messages array with conversation history
+    const messages: Array<{ role: string; content: string }> = [
+      { role: "system", content: systemPrompt },
+    ];
+
+    // Add all previous conversation history
+    conversationHistory.forEach((entry) => {
+      messages.push({ role: "user", content: entry.question });
+      if (entry.answer) {
+        messages.push({ role: "assistant", content: entry.answer });
+      }
+    });
+
+    // Add current question
+    messages.push({ role: "user", content: question });
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -335,7 +352,7 @@ const InterviewSession: React.FC = () => {
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
+        messages: messages,
         max_tokens: 120,
         temperature: 0.5,
       }),
@@ -379,9 +396,26 @@ const InterviewSession: React.FC = () => {
         ? "Hindi"
         : "English";
 
-    const prompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
+    const systemPrompt = `You are the candidate being interviewed. You MUST respond ONLY in ${languageName}. No matter what language the interviewer speaks, you MUST ALWAYS respond in ${languageName} and ${languageName} ONLY. Reply in first person ("I"), natural and conversational, like a human interviewee. If personal details help, use them; otherwise answer from your knowledge. Be concise (3–6 sentences), concrete, and confident. Avoid disclaimers and AI mentions.\n\nCRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.\n\nCANDIDATE DETAILS (optional):\n${
       personalContext || "<none>"
-    }\n\nInterviewer question: "${question}"`;
+    }`;
+
+    // Build messages array with conversation history
+    const messages: Array<{ role: string; content: string }> = [
+      { role: "system", content: systemPrompt },
+    ];
+
+    // Add all previous conversation history
+    conversationHistory.forEach((entry) => {
+      messages.push({ role: "user", content: entry.question });
+      if (entry.answer) {
+        messages.push({ role: "assistant", content: entry.answer });
+      }
+    });
+
+    // Add current question
+    messages.push({ role: "user", content: question });
+
     const res = await fetch(`${import.meta.env.VITE_API_URL}/ai/chat-stream`, {
       method: "POST",
       headers: {
@@ -389,7 +423,7 @@ const InterviewSession: React.FC = () => {
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
+        messages: messages,
         max_tokens: 120,
         temperature: 0.5,
         stream: true,
