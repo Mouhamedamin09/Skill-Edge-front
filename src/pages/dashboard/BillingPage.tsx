@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   CreditCard,
@@ -9,13 +9,40 @@ import {
   ArrowRight,
   Calendar,
   TrendingUp,
+  Loader2,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const BillingPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState<string | null>(null);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+  useEffect(() => {
+    // Check for success or cancel from Stripe Checkout
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+
+    if (success) {
+      setSuccessMessage("Payment successful! Your subscription is now active.");
+      // Clear the query params after showing message
+      setTimeout(() => {
+        navigate("/dashboard/billing", { replace: true });
+      }, 3000);
+    } else if (canceled) {
+      setErrorMessage("Payment was canceled. Please try again if you'd like to upgrade.");
+      setTimeout(() => {
+        navigate("/dashboard/billing", { replace: true });
+      }, 3000);
+    }
+  }, [searchParams, navigate]);
 
   if (!user) return null;
 
@@ -93,7 +120,69 @@ const BillingPage: React.FC = () => {
   };
 
   const daysUntilBilling = getDaysUntilBilling();
-  const isPro = user.subscription.plan === "pro";
+
+  const handleUpgrade = async (planId: string) => {
+    if (planId === "free") return; // Can't "upgrade" to free
+
+    try {
+      setLoading(planId);
+      setErrorMessage("");
+
+      const response = await fetch(`${API_BASE_URL}/stripe/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ planId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      setErrorMessage(error.message || "Failed to start checkout process");
+      setLoading(null);
+    }
+  };
+
+  const handleManageBilling = async () => {
+    try {
+      setPortalLoading(true);
+      setErrorMessage("");
+
+      const response = await fetch(`${API_BASE_URL}/stripe/create-portal-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create portal session");
+      }
+
+      // Redirect to Stripe Customer Portal
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error: any) {
+      console.error("Portal error:", error);
+      setErrorMessage(error.message || "Failed to open billing portal");
+      setPortalLoading(false);
+    }
+  };
 
   return (
     <div className="billing-page">
@@ -112,6 +201,30 @@ const BillingPage: React.FC = () => {
         </div>
       </motion.div>
 
+      {/* Success/Error Messages */}
+      {successMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="message success"
+          style={{ marginBottom: "2rem", padding: "1rem", borderRadius: "8px" }}
+        >
+          <CheckCircle size={20} />
+          <span>{successMessage}</span>
+        </motion.div>
+      )}
+
+      {errorMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="message error"
+          style={{ marginBottom: "2rem", padding: "1rem", borderRadius: "8px" }}
+        >
+          {errorMessage}
+        </motion.div>
+      )}
+
       {/* Current Plan Section */}
       {currentPlan && (
         <motion.div
@@ -121,56 +234,43 @@ const BillingPage: React.FC = () => {
           className="current-plan-section"
         >
           <div className="current-plan-card">
-            <div className="plan-header">
-              <div
-                className="plan-icon"
-                style={{
-                  backgroundColor: currentPlan.bgColor,
-                  color: currentPlan.color,
-                }}
-              >
-                <currentPlan.icon size={32} />
-              </div>
-              <div className="plan-info">
-                <h3 className="plan-name">{currentPlan.name} Plan</h3>
-                <p className="plan-description">{currentPlan.description}</p>
-              </div>
-              <div className="plan-status">
-                <span className="status-badge current">Current Plan</span>
-              </div>
+            <div className="card-icon" style={{ backgroundColor: currentPlan.bgColor }}>
+              {React.createElement(currentPlan.icon, {
+                size: 32,
+                color: currentPlan.color,
+              })}
             </div>
-
-            <div className="plan-details">
-              <div className="detail-item">
-                <Calendar size={20} />
-                <div>
-                  <span className="detail-label">Next Billing Date</span>
-                  <span className="detail-value">
-                    {user.subscription.endDate
-                      ? new Date(user.subscription.endDate).toLocaleDateString()
-                      : "N/A"}
-                  </span>
-                </div>
+            <div className="card-content">
+              <div className="plan-info">
+                <h3>{currentPlan.name} Plan</h3>
+                <p>{currentPlan.description}</p>
               </div>
-              {daysUntilBilling !== null && (
-                <div className="detail-item">
+              <div className="plan-stats">
+                {user.subscription.plan !== "free" && daysUntilBilling !== null && (
+                  <div className="stat-item">
+                    <Calendar size={20} />
+                    <div className="stat-content">
+                      <span className="stat-label">Next Billing</span>
+                      <span className="stat-value">{daysUntilBilling} days</span>
+                    </div>
+                  </div>
+                )}
+                <div className="stat-item">
                   <TrendingUp size={20} />
-                  <div>
-                    <span className="detail-label">Days Until Billing</span>
-                    <span className="detail-value">
-                      {daysUntilBilling} days
+                  <div className="stat-content">
+                    <span className="stat-label">Minutes Used</span>
+                    <span className="stat-value">
+                      {user.usage.totalMinutesUsed || 0} min
                     </span>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
-
-          {/* Removed extra top-up section per request */}
         </motion.div>
       )}
 
-      {/* Available Plans */}
+      {/* Plans Grid */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -239,21 +339,7 @@ const BillingPage: React.FC = () => {
                 </div>
 
                 <div className="card-actions">
-                  {plan.current && plan.id === "pro" ? (
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="btn-upgrade primary"
-                      onClick={() =>
-                        navigate("/code-redemption", {
-                          state: { selectedPlan: "pro" },
-                        })
-                      }
-                    >
-                      Add more hours
-                      <ArrowRight size={16} />
-                    </motion.button>
-                  ) : plan.current ? (
+                  {plan.current ? (
                     <button className="btn-current" disabled>
                       Current Plan
                     </button>
@@ -264,16 +350,22 @@ const BillingPage: React.FC = () => {
                       className={`btn-upgrade ${
                         plan.popular ? "primary" : "secondary"
                       }`}
-                      onClick={() =>
-                        navigate("/code-redemption", {
-                          state: { selectedPlan: plan.id },
-                        })
-                      }
+                      onClick={() => handleUpgrade(plan.id)}
+                      disabled={loading !== null || plan.id === "free"}
                     >
-                      {plan.id === "pro+"
-                        ? "Upgrade to Pro+"
-                        : `Upgrade to ${plan.name}`}
-                      <ArrowRight size={16} />
+                      {loading === plan.id ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          {plan.id === "free"
+                            ? "Free Plan"
+                            : `Upgrade to ${plan.name}`}
+                          {plan.id !== "free" && <ArrowRight size={16} />}
+                        </>
+                      )}
                     </motion.button>
                   )}
                 </div>
@@ -284,42 +376,49 @@ const BillingPage: React.FC = () => {
       </motion.div>
 
       {/* Billing Information */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.5 }}
-        className="billing-info-section"
-      >
-        <div className="billing-info-card">
-          <div className="info-header">
-            <CreditCard size={24} />
-            <h3>Billing Information</h3>
-          </div>
-          <div className="info-content">
-            <p>
-              Your subscription is managed securely through our payment
-              processor. You can update your billing information and payment
-              methods at any time.
-            </p>
-            <div className="info-actions">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="btn-secondary"
-              >
-                Update Payment Method
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="btn-outline"
-              >
-                Download Invoice
-              </motion.button>
+      {user.subscription.plan !== "free" && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="billing-info-section"
+        >
+          <div className="billing-info-card">
+            <div className="info-header">
+              <CreditCard size={24} />
+              <h3>Billing Information</h3>
+            </div>
+            <div className="info-content">
+              <p>
+                Your subscription is managed securely through Stripe. You can update
+                your billing information, payment methods, view invoices, and manage
+                your subscription at any time.
+              </p>
+              <div className="info-actions">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="btn-secondary"
+                  onClick={handleManageBilling}
+                  disabled={portalLoading}
+                >
+                  {portalLoading ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>Loading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard size={16} />
+                      <span>Manage Billing</span>
+                    </>
+                  )}
+                </motion.button>
+              </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };
