@@ -286,16 +286,18 @@ body {
 }
 
 .btn-outline {
-  background: transparent;
-  color: var(--primary-500);
-  border: 1px solid var(--primary-500);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: var(--primary-500);
-  color: white !important;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   border-color: var(--primary-500);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-danger {
@@ -511,6 +513,27 @@ body {
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 3rem;
+}
+
+.hero-buttons .btn-primary {
+  padding: 1rem 2rem;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  min-width: 200px;
+}
+
+.hero-buttons .btn-outline {
+  padding: 1rem 2rem;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  min-width: 180px;
+}
+
+.hero-buttons .btn-outline-white {
+  padding: 1rem 2rem;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  min-width: 180px;
 }
 
 /* Stats Section */
