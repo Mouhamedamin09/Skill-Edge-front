@@ -348,7 +348,7 @@ const InterviewSession: React.FC = () => {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: messages,
-        max_tokens: 120,
+        max_tokens: 500,
         temperature: 0.5,
       }),
     });
@@ -419,7 +419,7 @@ const InterviewSession: React.FC = () => {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: messages,
-        max_tokens: 120,
+        max_tokens: 500,
         temperature: 0.5,
         stream: true,
       }),
