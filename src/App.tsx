@@ -12,7 +12,6 @@ import PricingPage from "./pages/PricingPage";
 import AboutPage from "./pages/AboutPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
 import PlanSelectionPage from "./pages/PlanSelectionPage";
-import CodeRedemptionPage from "./pages/CodeRedemptionPage";
 
 // Dashboard Pages
 import DashboardHome from "./pages/dashboard/DashboardHome";
@@ -35,7 +34,6 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/verify-email" element={<EmailVerificationPage />} />
             <Route path="/plan-selection" element={<PlanSelectionPage />} />
-            <Route path="/code-redemption" element={<CodeRedemptionPage />} />
 
             {/* Protected Dashboard Routes */}
             <Route

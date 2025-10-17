@@ -96,7 +96,7 @@ const PlanSelectionPage: React.FC = () => {
     setError("");
 
     try {
-      // For free plan, activate immediately
+      // For free plan, activate immediately and go to dashboard
       if (selectedPlan === "free") {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         navigate("/dashboard", {
@@ -111,8 +111,8 @@ const PlanSelectionPage: React.FC = () => {
         return;
       }
 
-      // For paid plans, redirect to code redemption
-      navigate("/code-redemption", {
+      // For paid plans, redirect to billing page for Stripe checkout
+      navigate("/dashboard/billing", {
         state: {
           selectedPlan: selectedPlan,
         },

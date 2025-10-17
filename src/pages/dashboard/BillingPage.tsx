@@ -57,7 +57,7 @@ const BillingPage: React.FC = () => {
             setSuccessMessage(
               "Payment successful! Your subscription is now active."
             );
-            
+
             // Fetch updated user data
             try {
               const userResponse = await authAPI.getUser();
@@ -65,7 +65,7 @@ const BillingPage: React.FC = () => {
             } catch (err) {
               console.error("Failed to refresh user data:", err);
             }
-            
+
             // Clear URL parameters after updating
             setTimeout(() => {
               navigate("/dashboard/billing", { replace: true });
