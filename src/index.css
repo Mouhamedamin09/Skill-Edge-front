@@ -522,11 +522,31 @@ body {
   min-width: 200px;
 }
 
+[data-theme="dark"] .hero-buttons .btn-primary {
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+}
+
+[data-theme="dark"] .hero-buttons .btn-primary:hover {
+  background: linear-gradient(135deg, #1e3a8a, #1e40af);
+}
+
 .hero-buttons .btn-outline {
   padding: 1rem 2rem;
   font-size: var(--font-size-lg);
   font-weight: 700;
   min-width: 180px;
+}
+
+[data-theme="dark"] .hero-buttons .btn-outline {
+  background: white;
+  color: #1e293b !important;
+  border-color: white;
+}
+
+[data-theme="dark"] .hero-buttons .btn-outline:hover {
+  background: #f1f5f9;
+  color: #0f172a !important;
+  border-color: #e2e8f0;
 }
 
 .hero-buttons .btn-outline-white {
