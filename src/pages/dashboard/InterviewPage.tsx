@@ -517,21 +517,17 @@ Answer:`;
               </div>
               <div className="form-group">
                 <label>Interview Language</label>
-                <div className="language-selector">
+                <select
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  className="form-select"
+                >
                   {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      type="button"
-                      className={`language-option ${
-                        selectedLanguage === lang.code ? "selected" : ""
-                      }`}
-                      onClick={() => setSelectedLanguage(lang.code)}
-                    >
-                      <span className="flag">{lang.flag}</span>
-                      <span className="name">{lang.name}</span>
-                    </button>
+                    <option key={lang.code} value={lang.code}>
+                      {lang.flag} {lang.name}
+                    </option>
                   ))}
-                </div>
+                </select>
                 <p className="form-help">
                   Select the language for the interview conversation.
                 </p>
