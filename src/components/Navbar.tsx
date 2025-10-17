@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, LogIn, User, Mic } from "lucide-react";
 import { skillEdgeLogo } from "../assets/logos";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,6 +50,7 @@ const Navbar = () => {
 
         {/* Desktop Auth Buttons */}
         <div className="navbar-actions">
+          <ThemeToggle />
           <Link to="/login" className="btn-nav outline">
             <LogIn size={16} />
             Login
@@ -86,6 +88,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="mobile-auth">
+            <ThemeToggle />
             <Link
               to="/login"
               className="btn-nav outline"

@@ -493,7 +493,11 @@ const BillingPage: React.FC = () => {
       >
         <h3 className="payment-method-title">Payment Method</h3>
         <div className="payment-method-options">
-          <label className={`payment-option ${paymentMethod === "card" ? "active" : ""}`}>
+          <label
+            className={`payment-option ${
+              paymentMethod === "card" ? "active" : ""
+            }`}
+          >
             <input
               type="radio"
               name="paymentMethod"
@@ -506,7 +510,11 @@ const BillingPage: React.FC = () => {
               <span>Credit / Debit Card</span>
             </div>
           </label>
-          <label className={`payment-option ${paymentMethod === "cash" ? "active" : ""}`}>
+          <label
+            className={`payment-option ${
+              paymentMethod === "cash" ? "active" : ""
+            }`}
+          >
             <input
               type="radio"
               name="paymentMethod"
@@ -527,7 +535,9 @@ const BillingPage: React.FC = () => {
             className="payment-info-box"
           >
             <p>
-              <strong>💡 How it works:</strong> Get a QR code, show it to any store owner (tabacchi, edicola), they scan and pay. Your subscription activates instantly!
+              <strong>💡 How it works:</strong> Get a QR code, show it to any
+              store owner (tabacchi, edicola), they scan and pay. Your
+              subscription activates instantly!
             </p>
           </motion.div>
         )}

@@ -13,6 +13,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { skillEdgeLogo } from "../assets/logos";
+import ThemeToggle from "./ThemeToggle";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -132,6 +133,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </div>
 
           <div className="header-right">
+            <ThemeToggle />
             <div className="plan-badge">
               {user?.subscription.plan.toUpperCase()}
             </div>

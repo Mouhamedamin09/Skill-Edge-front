@@ -16,9 +16,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #ffffff;
-  color: var(--secondary-900);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   line-height: 1.6;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 #root {
@@ -147,6 +148,92 @@ body {
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
+
+  /* Theme Colors - Light Mode */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-elevated: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --border-color: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+}
+
+/* Dark Mode Theme Colors */
+[data-theme="dark"] {
+  /* Primary Colors - Adjusted for dark mode */
+  --primary-50: #1e3a8a;
+  --primary-100: #1e40af;
+  --primary-200: #1d4ed8;
+  --primary-300: #2563eb;
+  --primary-400: #3b82f6;
+  --primary-500: #60a5fa;
+  --primary-600: #93c5fd;
+  --primary-700: #bfdbfe;
+  --primary-800: #dbeafe;
+  --primary-900: #eff6ff;
+
+  /* Secondary Colors - Adjusted for dark mode */
+  --secondary-50: #0f172a;
+  --secondary-100: #1e293b;
+  --secondary-200: #334155;
+  --secondary-300: #475569;
+  --secondary-400: #64748b;
+  --secondary-500: #94a3b8;
+  --secondary-600: #cbd5e1;
+  --secondary-700: #e2e8f0;
+  --secondary-800: #f1f5f9;
+  --secondary-900: #f8fafc;
+
+  /* Theme Colors - Dark Mode */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-elevated: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --border-color: #334155;
+  --border-hover: #475569;
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+
+  /* Shadows for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+/* Theme Toggle Styles */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-primary);
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-hover);
+  transform: scale(1.05);
+}
+
+.theme-toggle .theme-icon {
+  transition: transform var(--transition-fast);
+}
+
+.theme-toggle:hover .theme-icon {
+  transform: rotate(20deg);
 }
 
 /* Button Styles */
@@ -361,13 +448,13 @@ body {
 /* HomePage Complete Styles */
 .home-page {
   min-height: 100vh;
-  background: white;
+  background: var(--bg-primary);
 }
 
 .hero-section {
   padding: 6rem 0 4rem;
-  background: white;
-  color: var(--secondary-900);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   position: relative;
   overflow: hidden;
 }
@@ -397,7 +484,7 @@ body {
   font-weight: 800;
   margin-bottom: 1.5rem;
   line-height: 1.1;
-  color: var(--secondary-900);
+  color: var(--text-primary);
 }
 
 .primary-text {
@@ -407,7 +494,7 @@ body {
 .hero-subtitle {
   font-size: var(--font-size-xl);
   margin-bottom: 2.5rem;
-  color: var(--secondary-600);
+  color: var(--text-secondary);
   line-height: 1.6;
   max-width: 600px;
   margin-left: auto;
@@ -424,10 +511,10 @@ body {
 
 /* Stats Section */
 .stats-section {
-  background: white;
+  background: var(--bg-primary);
   padding: 4rem 0;
-  border-top: 1px solid var(--secondary-200);
-  border-bottom: 1px solid var(--secondary-200);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .stats-grid {
@@ -444,10 +531,10 @@ body {
 .stat-item {
   text-align: center;
   padding: 2rem 1rem;
-  background: white;
+  background: var(--bg-elevated);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--secondary-200);
+  border: 1px solid var(--border-color);
   transition: all var(--transition-normal);
   height: 100%;
   display: flex;
@@ -475,7 +562,7 @@ body {
 
 .stat-label {
   font-size: var(--font-size-base);
-  color: var(--secondary-700);
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -495,7 +582,7 @@ body {
 .section-title {
   font-size: var(--font-size-3xl);
   font-weight: 700;
-  color: var(--secondary-900);
+  color: var(--text-primary);
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -6127,4 +6214,544 @@ body {
   .plan-selection-card-price {
     font-size: var(--font-size-3xl);
   }
+}
+
+/* ============================================
+   COMPREHENSIVE DARK MODE THEME OVERRIDES
+   ============================================ */
+
+/* Cards and Containers */
+.card,
+.feature-card,
+.plan-card,
+.pricing-card,
+.step-item,
+.faq-item,
+.team-member,
+.plan-selection-card {
+  background: var(--bg-elevated);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.card:hover,
+.feature-card:hover,
+.plan-card:hover,
+.pricing-card:hover,
+.plan-selection-card:hover {
+  border-color: var(--border-hover);
+}
+
+/* Sections and Backgrounds */
+.features-section,
+.how-it-works-section,
+.about-section,
+.pricing-section,
+.plan-selection-section,
+.footer,
+.auth-page {
+  background: var(--bg-primary);
+}
+
+/* CTA Sections */
+.cta {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Text Elements */
+.feature-title,
+.feature-description,
+.step-item h3,
+.step-item p,
+.faq-question,
+.faq-answer,
+.card-title,
+.card-text,
+.plan-name,
+.plan-description,
+.team-member-name,
+.team-member-role,
+.footer-text,
+.footer-link {
+  color: var(--text-primary);
+}
+
+.feature-description,
+.step-item p,
+.faq-answer,
+.card-text,
+.plan-description,
+.team-member-role,
+.footer-text {
+  color: var(--text-secondary);
+}
+
+/* Form Elements */
+.form-control,
+.form-input,
+.form-textarea,
+.form-select,
+input,
+textarea,
+select {
+  background: var(--bg-elevated);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.form-control:focus,
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary-500);
+  background: var(--bg-elevated);
+}
+
+.form-control::placeholder,
+.form-input::placeholder,
+.form-textarea::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.form-label {
+  color: var(--text-primary);
+}
+
+.form-help-text,
+.form-error {
+  color: var(--text-secondary);
+}
+
+/* Navbar */
+.navbar {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-link {
+  color: var(--text-primary);
+}
+
+.navbar-link.active,
+.navbar-link:hover {
+  color: var(--primary-500);
+}
+
+/* Dashboard Layout */
+.dashboard-layout {
+  background: var(--bg-primary);
+}
+
+.sidebar {
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar-nav-item {
+  color: var(--text-secondary);
+}
+
+.sidebar-nav-item:hover,
+.sidebar-nav-item.active {
+  background: var(--bg-tertiary);
+  color: var(--primary-500);
+}
+
+.sidebar-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+.user-name {
+  color: var(--text-primary);
+}
+
+.user-plan {
+  color: var(--text-secondary);
+}
+
+.logout-btn {
+  color: var(--text-secondary);
+}
+
+.logout-btn:hover {
+  color: var(--error-500);
+  background: var(--bg-tertiary);
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.page-title {
+  color: var(--text-primary);
+}
+
+.plan-badge {
+  background: var(--primary-500);
+  color: white;
+}
+
+.usage-indicator {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+}
+
+.usage-text {
+  color: var(--text-primary);
+}
+
+/* Page Content */
+.page-content {
+  background: var(--bg-primary);
+}
+
+/* Modals */
+.modal-overlay {
+  background: var(--overlay-bg);
+}
+
+.modal-content,
+.modal-dialog {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  color: var(--text-primary);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+.modal-close {
+  color: var(--text-secondary);
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+/* Tables */
+table {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+td {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+tr:hover {
+  background: var(--bg-secondary);
+}
+
+/* Auth Pages */
+.auth-container {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+.auth-title {
+  color: var(--text-primary);
+}
+
+.auth-subtitle {
+  color: var(--text-secondary);
+}
+
+.auth-link {
+  color: var(--primary-500);
+}
+
+.auth-link:hover {
+  color: var(--primary-600);
+}
+
+/* Interview Session */
+.interview-container {
+  background: var(--bg-primary);
+}
+
+.interview-header {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.interview-content {
+  background: var(--bg-primary);
+}
+
+.transcript-container,
+.response-container {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+.transcript-text,
+.response-text {
+  color: var(--text-primary);
+}
+
+/* Billing Page */
+.billing-container {
+  background: var(--bg-primary);
+}
+
+.billing-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+.billing-card-title {
+  color: var(--text-primary);
+}
+
+.billing-card-text {
+  color: var(--text-secondary);
+}
+
+/* Settings Page */
+.settings-container {
+  background: var(--bg-primary);
+}
+
+.settings-section {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+.settings-section-title {
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-label {
+  color: var(--text-primary);
+}
+
+.settings-description {
+  color: var(--text-secondary);
+}
+
+/* Footer */
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-title {
+  color: var(--text-primary);
+}
+
+.footer-link {
+  color: var(--text-secondary);
+}
+
+.footer-link:hover {
+  color: var(--primary-500);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Badges and Tags */
+.badge,
+.tag {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+/* Dividers */
+hr,
+.divider {
+  border-color: var(--border-color);
+}
+
+/* Pricing Plans Specific */
+.pricing-plan-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+.pricing-plan-header {
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pricing-plan-name {
+  color: var(--text-primary);
+}
+
+.pricing-plan-price {
+  color: var(--primary-500);
+}
+
+.pricing-plan-feature {
+  color: var(--text-secondary);
+}
+
+/* Interview Types Modal */
+.interview-type-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+.interview-type-card:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-hover);
+}
+
+.interview-type-name {
+  color: var(--text-primary);
+}
+
+.interview-type-description {
+  color: var(--text-secondary);
+}
+
+/* Loading Overlays */
+.loading-overlay {
+  background: var(--overlay-bg);
+}
+
+.loading-spinner {
+  color: var(--primary-500);
+}
+
+/* Tooltips */
+.tooltip {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-nav-link {
+  color: var(--text-primary);
+}
+
+.mobile-nav-link.active,
+.mobile-nav-link:hover {
+  color: var(--primary-500);
+  background: var(--bg-tertiary);
+}
+
+/* Sidebar Backdrop */
+.sidebar-backdrop {
+  background: var(--overlay-bg);
+}
+
+/* Code Blocks */
+code,
+pre {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+/* Scrollbars for Dark Mode */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  border: 2px solid var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* Selection Colors */
+[data-theme="dark"] ::selection {
+  background: var(--primary-500);
+  color: white;
+}
+
+[data-theme="dark"] ::-moz-selection {
+  background: var(--primary-500);
+  color: white;
+}
+
+/* Smooth Transitions for Theme Changes */
+* {
+  transition: background-color var(--transition-normal), 
+              border-color var(--transition-normal),
+              color var(--transition-normal);
+}
+
+/* Exclude transitions for elements that shouldn't animate */
+.no-transition,
+button,
+input,
+textarea,
+select,
+.modal-overlay,
+.sidebar-backdrop {
+  transition: none;
+}
+
+button,
+input,
+textarea,
+select {
+  transition: background-color var(--transition-fast), 
+              border-color var(--transition-fast),
+              color var(--transition-fast);
 }
