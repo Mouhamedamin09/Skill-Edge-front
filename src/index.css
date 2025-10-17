@@ -3960,6 +3960,226 @@ body {
   text-align: center;
 }
 
+/* Payment Method Selector - Clean Modern Design */
+.payment-method-section {
+  background: white;
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.payment-method-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.01em;
+}
+
+.payment-method-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.payment-option {
+  position: relative;
+  cursor: pointer;
+  display: block;
+}
+
+.payment-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.payment-option-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  transition: all 0.15s ease;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.payment-option-content svg {
+  flex-shrink: 0;
+  color: #9ca3af;
+  transition: color 0.15s ease;
+}
+
+.payment-option:hover .payment-option-content {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.payment-option.active .payment-option-content {
+  border-color: #6366f1;
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.payment-option.active .payment-option-content svg {
+  color: #6366f1;
+}
+
+.payment-info-box {
+  margin-top: 1rem;
+  padding: 0.875rem 1.125rem;
+  background: linear-gradient(135deg, #fef3c7, #fef3c7);
+  border-left: 3px solid #f59e0b;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.payment-info-box p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #78350f;
+}
+
+.payment-info-box strong {
+  color: #92400e;
+}
+
+/* QR Code Modal - Clean Design */
+.qr-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1.5rem;
+}
+
+.qr-modal-content {
+  background: white;
+  border-radius: 20px;
+  max-width: 420px;
+  width: 100%;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.qr-modal-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.qr-modal-header .qr-icon {
+  color: #10b981;
+  margin-bottom: 0.75rem;
+}
+
+.qr-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.qr-modal-header p {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.qr-code-container {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.qr-code-container svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.qr-instructions {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.qr-instructions strong {
+  display: block;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.qr-instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #78350f;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.qr-instructions li {
+  margin-bottom: 0.25rem;
+}
+
+.qr-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.qr-modal-actions .btn-primary {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 0.875rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.qr-modal-actions .btn-primary:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+}
+
+.qr-modal-actions .btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  padding: 0.875rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.qr-modal-actions .btn-secondary:hover {
+  background: #e5e7eb;
+}
+
 .header-content {
   max-width: 600px;
   margin: 0 auto;
