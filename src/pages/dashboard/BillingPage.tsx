@@ -13,13 +13,15 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { authAPI } from "../../services/api";
 
 const BillingPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -35,6 +37,7 @@ const BillingPage: React.FC = () => {
     if (success && sessionId) {
       // Verify and activate subscription
       const verifySession = async () => {
+        setVerifyingPayment(true);
         try {
           const response = await fetch(
             `${API_BASE_URL}/stripe/verify-session`,
@@ -52,16 +55,28 @@ const BillingPage: React.FC = () => {
 
           if (response.ok && data.success) {
             setSuccessMessage(
-              "Payment successful! Your subscription is now active. Refreshing..."
+              "Payment successful! Your subscription is now active."
             );
-            // Reload the page to fetch updated user data
+            
+            // Fetch updated user data
+            try {
+              const userResponse = await authAPI.getUser();
+              setUser(userResponse.user);
+            } catch (err) {
+              console.error("Failed to refresh user data:", err);
+            }
+            
+            // Clear URL parameters after updating
             setTimeout(() => {
-              window.location.href = "/dashboard/billing";
-            }, 2000);
+              navigate("/dashboard/billing", { replace: true });
+              setVerifyingPayment(false);
+            }, 1500);
           } else {
             setErrorMessage(
-              data.error || "Failed to activate subscription. Please contact support."
+              data.error ||
+                "Failed to activate subscription. Please contact support."
             );
+            setVerifyingPayment(false);
             setTimeout(() => {
               navigate("/dashboard/billing", { replace: true });
             }, 3000);
@@ -69,6 +84,7 @@ const BillingPage: React.FC = () => {
         } catch (error) {
           console.error("Session verification error:", error);
           setErrorMessage("Failed to verify payment. Please contact support.");
+          setVerifyingPayment(false);
           setTimeout(() => {
             navigate("/dashboard/billing", { replace: true });
           }, 3000);
@@ -84,7 +100,7 @@ const BillingPage: React.FC = () => {
         navigate("/dashboard/billing", { replace: true });
       }, 3000);
     }
-  }, [searchParams, navigate, API_BASE_URL]);
+  }, [searchParams, navigate, API_BASE_URL, setUser]);
 
   if (!user) return null;
 
@@ -234,6 +250,49 @@ const BillingPage: React.FC = () => {
 
   return (
     <div className="billing-page">
+      {/* Loading Overlay */}
+      {verifyingPayment && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            gap: "1.5rem",
+          }}
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          >
+            <Loader2 size={56} style={{ color: "#6366f1" }} />
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            style={{
+              color: "#fff",
+              fontSize: "1.25rem",
+              fontWeight: "600",
+              textAlign: "center",
+            }}
+          >
+            Activating your subscription...
+          </motion.p>
+        </motion.div>
+      )}
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -250,7 +309,7 @@ const BillingPage: React.FC = () => {
       </motion.div>
 
       {/* Success/Error Messages */}
-      {successMessage && (
+      {successMessage && !verifyingPayment && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -262,7 +321,7 @@ const BillingPage: React.FC = () => {
         </motion.div>
       )}
 
-      {errorMessage && (
+      {errorMessage && !verifyingPayment && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
