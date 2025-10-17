@@ -452,7 +452,7 @@ const BillingPage: React.FC = () => {
                 </div>
 
                 <div className="card-actions">
-                  {plan.current ? (
+                  {plan.current && plan.id !== "pro" ? (
                     <button className="btn-current" disabled>
                       Current Plan
                     </button>
@@ -475,6 +475,8 @@ const BillingPage: React.FC = () => {
                         <>
                           {plan.id === "free"
                             ? "Free Plan"
+                            : plan.current && plan.id === "pro"
+                            ? "Add 180 More Minutes"
                             : `Upgrade to ${plan.name}`}
                           {plan.id !== "free" && <ArrowRight size={16} />}
                         </>
