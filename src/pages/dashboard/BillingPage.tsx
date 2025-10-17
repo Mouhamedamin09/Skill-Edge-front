@@ -10,10 +10,13 @@ import {
   Calendar,
   TrendingUp,
   Loader2,
+  QrCode,
+  Banknote,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { authAPI } from "../../services/api";
+import { QRCodeSVG } from "qrcode.react";
 
 const BillingPage: React.FC = () => {
   const { user, setUser } = useAuth();
@@ -24,6 +27,9 @@ const BillingPage: React.FC = () => {
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "cash">("card");
+  const [showQRCode, setShowQRCode] = useState(false);
+  const [paymentLinkUrl, setPaymentLinkUrl] = useState("");
 
   const API_BASE_URL =
     import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -215,6 +221,44 @@ const BillingPage: React.FC = () => {
     }
   };
 
+  const handleCashPayment = async (planId: string) => {
+    if (planId === "free") return;
+
+    try {
+      setLoading(planId);
+      setErrorMessage("");
+
+      const response = await fetch(
+        `${API_BASE_URL}/stripe/create-payment-link`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ planId }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create payment link");
+      }
+
+      // Show QR code modal
+      if (data.url) {
+        setPaymentLinkUrl(data.url);
+        setShowQRCode(true);
+      }
+    } catch (error: any) {
+      console.error("Payment link error:", error);
+      setErrorMessage(error.message || "Failed to generate payment QR code");
+    } finally {
+      setLoading(null);
+    }
+  };
+
   const handleManageBilling = async () => {
     try {
       setPortalLoading(true);
@@ -290,6 +334,156 @@ const BillingPage: React.FC = () => {
           >
             Activating your subscription...
           </motion.p>
+        </motion.div>
+      )}
+
+      {/* QR Code Modal */}
+      {showQRCode && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setShowQRCode(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "2rem",
+          }}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "20px",
+              padding: "2.5rem",
+              maxWidth: "500px",
+              width: "100%",
+              textAlign: "center",
+              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            <div style={{ marginBottom: "1.5rem" }}>
+              <Banknote
+                size={48}
+                style={{ color: "#10b981", marginBottom: "1rem" }}
+              />
+              <h2
+                style={{
+                  fontSize: "1.75rem",
+                  fontWeight: "700",
+                  marginBottom: "0.5rem",
+                  color: "#1f2937",
+                }}
+              >
+                Show This QR Code to Store Owner
+              </h2>
+              <p style={{ color: "#6b7280", fontSize: "0.95rem" }}>
+                The store owner will scan this code and complete the payment
+              </p>
+            </div>
+
+            <div
+              style={{
+                padding: "2rem",
+                backgroundColor: "#f9fafb",
+                borderRadius: "15px",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <QRCodeSVG
+                value={paymentLinkUrl}
+                size={256}
+                level="H"
+                includeMargin={true}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  maxWidth: "256px",
+                  margin: "0 auto",
+                  display: "block",
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#fef3c7",
+                padding: "1rem",
+                borderRadius: "10px",
+                marginBottom: "1.5rem",
+                textAlign: "left",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "#92400e",
+                  margin: 0,
+                  lineHeight: "1.6",
+                }}
+              >
+                <strong>💡 How it works:</strong>
+                <br />
+                1. Show this QR code to the store owner (tabacchi, edicola)
+                <br />
+                2. They scan it with their phone
+                <br />
+                3. They pay with their credit card
+                <br />
+                4. Your subscription activates automatically!
+              </p>
+            </div>
+
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <button
+                onClick={() => window.open(paymentLinkUrl, "_blank")}
+                style={{
+                  flex: 1,
+                  padding: "0.875rem 1.5rem",
+                  backgroundColor: "#6366f1",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontSize: "0.95rem",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <QrCode size={18} />
+                Open Payment Link
+              </button>
+              <button
+                onClick={() => setShowQRCode(false)}
+                style={{
+                  flex: 1,
+                  padding: "0.875rem 1.5rem",
+                  backgroundColor: "#e5e7eb",
+                  color: "#374151",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontSize: "0.95rem",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
         </motion.div>
       )}
 
@@ -383,6 +577,96 @@ const BillingPage: React.FC = () => {
         </motion.div>
       )}
 
+      {/* Payment Method Selector */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.15 }}
+        style={{
+          marginBottom: "2rem",
+          backgroundColor: "#fff",
+          borderRadius: "15px",
+          padding: "1.5rem",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
+        }}
+      >
+        <h3 style={{ marginBottom: "1rem", fontSize: "1.1rem", fontWeight: "600", color: "#1f2937" }}>
+          Choose Payment Method
+        </h3>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <button
+            onClick={() => setPaymentMethod("card")}
+            style={{
+              flex: 1,
+              padding: "1rem",
+              borderRadius: "10px",
+              border: paymentMethod === "card" ? "2px solid #6366f1" : "2px solid #e5e7eb",
+              backgroundColor: paymentMethod === "card" ? "#f0f1ff" : "#fff",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.75rem",
+              transition: "all 0.2s",
+            }}
+          >
+            <CreditCard size={24} color={paymentMethod === "card" ? "#6366f1" : "#6b7280"} />
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontWeight: "600", color: paymentMethod === "card" ? "#6366f1" : "#1f2937" }}>
+                Credit/Debit Card
+              </div>
+              <div style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+                Pay online instantly
+              </div>
+            </div>
+          </button>
+          <button
+            onClick={() => setPaymentMethod("cash")}
+            style={{
+              flex: 1,
+              padding: "1rem",
+              borderRadius: "10px",
+              border: paymentMethod === "cash" ? "2px solid #10b981" : "2px solid #e5e7eb",
+              backgroundColor: paymentMethod === "cash" ? "#f0fdf4" : "#fff",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.75rem",
+              transition: "all 0.2s",
+            }}
+          >
+            <Banknote size={24} color={paymentMethod === "cash" ? "#10b981" : "#6b7280"} />
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontWeight: "600", color: paymentMethod === "cash" ? "#10b981" : "#1f2937" }}>
+                Cash Payment (QR Code)
+              </div>
+              <div style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+                Pay at tabacchi/edicola
+              </div>
+            </div>
+          </button>
+        </div>
+        {paymentMethod === "cash" && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            style={{
+              marginTop: "1rem",
+              padding: "1rem",
+              backgroundColor: "#fef3c7",
+              borderRadius: "10px",
+            }}
+          >
+            <p style={{ fontSize: "0.875rem", color: "#92400e", margin: 0, lineHeight: "1.6" }}>
+              <strong>💡 How Cash Payment Works:</strong><br />
+              You'll get a QR code that you can show to any store owner (tabacchi, edicola, etc.). 
+              They scan it and pay with their card. Your subscription activates immediately!
+            </p>
+          </motion.div>
+        )}
+      </motion.div>
+
       {/* Plans Grid */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -463,7 +747,13 @@ const BillingPage: React.FC = () => {
                       className={`btn-upgrade ${
                         plan.popular ? "primary" : "secondary"
                       }`}
-                      onClick={() => handleUpgrade(plan.id)}
+                      onClick={() => {
+                        if (paymentMethod === "card") {
+                          handleUpgrade(plan.id);
+                        } else {
+                          handleCashPayment(plan.id);
+                        }
+                      }}
                       disabled={loading !== null || plan.id === "free"}
                     >
                       {loading === plan.id ? (
