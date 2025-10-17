@@ -370,7 +370,7 @@ const BillingPage: React.FC = () => {
             <div className="qr-instructions">
               <strong>How it works:</strong>
               <ol>
-                <li>Show this QR code at any tabacchi/edicola</li>
+                <li>Show this QR code at any store owner</li>
                 <li>Store owner scans with their phone</li>
                 <li>They pay → Your plan activates instantly!</li>
               </ol>
