@@ -34,10 +34,6 @@ const BillingPage: React.FC = () => {
   const API_BASE_URL =
     import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-  // DEBUG: Log the API URL
-  console.log("🔍 BillingPage API_BASE_URL:", API_BASE_URL);
-  console.log("🔍 import.meta.env.VITE_API_URL:", import.meta.env.VITE_API_URL);
-
   useEffect(() => {
     // Check for success or cancel from Stripe Checkout
     const success = searchParams.get("success");

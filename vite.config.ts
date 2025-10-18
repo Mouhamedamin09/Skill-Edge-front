@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     // Only set API URL for production builds, let .env work for dev
-    ...(mode === 'production' && {
+    ...(mode === "production" && {
       "import.meta.env.VITE_API_URL": JSON.stringify(
         "https://monkfish-app-nnhdy.ondigitalocean.app/api"
       ),
