@@ -46,7 +46,6 @@ const InterviewSession: React.FC = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const bottomAnchorRef = useRef<HTMLDivElement | null>(null);
   const stopTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -214,8 +213,6 @@ const InterviewSession: React.FC = () => {
         answer: "",
       };
       setConversationHistory((p) => [...p, entry]);
-      // Auto-scroll when new question is added
-      setTimeout(scrollToBottom, 100);
       try {
         await generateResponseStream(text, generalInfo || "", (chunk) => {
           streamed += chunk;
@@ -225,8 +222,6 @@ const InterviewSession: React.FC = () => {
             if (idx !== -1) copy[idx] = { ...copy[idx], answer: streamed };
             return copy;
           });
-          // Auto-scroll during streaming
-          setTimeout(scrollToBottom, 100);
         });
       } catch {
         const answer = await generateResponse(text, generalInfo || "");
@@ -479,25 +474,6 @@ Instructions:
     }
   };
 
-  // Auto-scroll to latest answer
-  useEffect(() => {
-    if (bottomAnchorRef.current) {
-      bottomAnchorRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
-  }, [conversationHistory]);
-
-  // Auto-scroll during streaming responses
-  const scrollToBottom = () => {
-    if (bottomAnchorRef.current) {
-      bottomAnchorRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
-  };
 
   return (
     <div className="interview-page">
@@ -569,18 +545,16 @@ Instructions:
                   </p>
                 </div>
               ) : (
-                conversationHistory.map((entry, idx) => (
+                conversationHistory.slice().reverse().map((entry, idx) => (
                   <div key={entry.id} className="conversation-item">
                     <div className="conversation-meta">
-                      #{idx + 1} · {entry.timestamp}
+                      #{conversationHistory.length - idx} · {entry.timestamp}
                     </div>
                     <div className="q">{entry.question}</div>
                     <div className="a">{entry.answer}</div>
                   </div>
                 ))
               )}
-              {/* Auto-scroll anchor */}
-              <div ref={bottomAnchorRef} />
             </div>
           </div>
 

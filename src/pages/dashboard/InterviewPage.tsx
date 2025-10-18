@@ -80,14 +80,14 @@ const InterviewPage: React.FC = () => {
     const handleKeyPress = (event: KeyboardEvent) => {
       // Don't interfere with space key in input fields, textareas, or contenteditable elements
       const target = event.target as HTMLElement;
-      const isInputField = target && (
-        target.tagName === 'INPUT' || 
-        target.tagName === 'TEXTAREA' || 
-        target.contentEditable === 'true' ||
-        target.closest('input') ||
-        target.closest('textarea')
-      );
-      
+      const isInputField =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.contentEditable === "true" ||
+          target.closest("input") ||
+          target.closest("textarea"));
+
       if (event.code === "Space" && !isProcessing && !isInputField) {
         event.preventDefault();
         if (isRecording) {
