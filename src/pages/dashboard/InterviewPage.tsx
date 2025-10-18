@@ -75,10 +75,20 @@ const InterviewPage: React.FC = () => {
     }
   }, []);
 
-  // Space key toggles recording
+  // Space key toggles recording (only when not in input fields)
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.code === "Space" && !isProcessing) {
+      // Don't interfere with space key in input fields, textareas, or contenteditable elements
+      const target = event.target as HTMLElement;
+      const isInputField = target && (
+        target.tagName === 'INPUT' || 
+        target.tagName === 'TEXTAREA' || 
+        target.contentEditable === 'true' ||
+        target.closest('input') ||
+        target.closest('textarea')
+      );
+      
+      if (event.code === "Space" && !isProcessing && !isInputField) {
         event.preventDefault();
         if (isRecording) {
           stopRecording();
