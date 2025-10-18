@@ -38,7 +38,7 @@ const PricingPage: React.FC = () => {
       color: "var(--secondary-500)",
       bgColor: "var(--secondary-50)",
       features: [
-        "15 minutes per month",
+        "5 minutes per month",
         "GPT-3.5 responses",
         "Basic interview types",
         "Email support",
@@ -56,7 +56,7 @@ const PricingPage: React.FC = () => {
       color: "var(--primary-500)",
       bgColor: "var(--primary-50)",
       features: [
-        "3 hours per month",
+        "90 minutes per month",
         "GPT-4 responses",
         "All interview types",
         "Priority support",
@@ -258,7 +258,7 @@ const PricingPage: React.FC = () => {
             <div className="faq-item">
               <h4>Is there a free trial?</h4>
               <p>
-                Yes, our Free plan gives you 15 minutes per month to try out all
+                Yes, our Free plan gives you 5 minutes per month to try out all
                 features.
               </p>
             </div>

@@ -40,7 +40,7 @@ const PlanSelectionPage: React.FC = () => {
       icon: Users,
       color: "blue",
       features: [
-        "15 minutes per month",
+        "5 minutes per month",
         "GPT-3.5 responses",
         "Basic interview types",
         "Email support",
@@ -56,7 +56,7 @@ const PlanSelectionPage: React.FC = () => {
       color: "purple",
       popular: true,
       features: [
-        "3 hours per month",
+        "90 minutes per month",
         "GPT-4 responses",
         "All interview types",
         "Priority support",
