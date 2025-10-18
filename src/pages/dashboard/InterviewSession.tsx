@@ -32,6 +32,10 @@ const InterviewSession: React.FC = () => {
   } = state || {};
   const { user, setUser } = useAuth();
 
+  // Debug logging
+  console.log("InterviewSession - Received state:", state);
+  console.log("InterviewSession - userName:", userName);
+
   const [status, setStatus] = useState("Ready to start");
   const [error, setError] = useState("");
   const [isRecording, setIsRecording] = useState(false);
@@ -47,7 +51,9 @@ const InterviewSession: React.FC = () => {
   const [sessionMinutesUsed, setSessionMinutesUsed] = useState(0);
   const [remainingMinutes, setRemainingMinutes] = useState(0);
   const [canRecord, setCanRecord] = useState(true);
-  const [recordingStartTime, setRecordingStartTime] = useState<number | null>(null);
+  const [recordingStartTime, setRecordingStartTime] = useState<number | null>(
+    null
+  );
 
   const streamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -317,12 +323,14 @@ const InterviewSession: React.FC = () => {
       mediaRecorderRef.current.state === "recording"
     ) {
       // Check minimum recording time (2 seconds)
-      const recordingDuration = recordingStartTime ? Date.now() - recordingStartTime : 0;
+      const recordingDuration = recordingStartTime
+        ? Date.now() - recordingStartTime
+        : 0;
       if (recordingDuration < 2000) {
         setError("Please record for at least 2 seconds before stopping.");
         return;
       }
-      
+
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setRecordingStartTime(null);
@@ -340,10 +348,12 @@ const InterviewSession: React.FC = () => {
       const audioBlob = new Blob(audioChunksRef.current, {
         type: (audioChunksRef.current[0] as any)?.type || "audio/webm",
       });
-      
+
       // Check if we have meaningful audio data (at least 1KB)
       if (audioBlob.size < 1024) {
-        throw new Error("Please speak for at least 2-3 seconds before stopping recording.");
+        throw new Error(
+          "Please speak for at least 2-3 seconds before stopping recording."
+        );
       }
 
       // Estimate and clamp consumption before processing
@@ -370,17 +380,26 @@ const InterviewSession: React.FC = () => {
       };
       setConversationHistory((p) => [...p, entry]);
       try {
-        await generateResponseStream(text, generalInfo || "", userName || "", (chunk) => {
-          streamed += chunk;
-          setConversationHistory((prev) => {
-            const copy = [...prev];
-            const idx = copy.findIndex((e) => e.id === entry.id);
-            if (idx !== -1) copy[idx] = { ...copy[idx], answer: streamed };
-            return copy;
-          });
-        });
+        await generateResponseStream(
+          text,
+          generalInfo || "",
+          userName || "",
+          (chunk) => {
+            streamed += chunk;
+            setConversationHistory((prev) => {
+              const copy = [...prev];
+              const idx = copy.findIndex((e) => e.id === entry.id);
+              if (idx !== -1) copy[idx] = { ...copy[idx], answer: streamed };
+              return copy;
+            });
+          }
+        );
       } catch {
-        const answer = await generateResponse(text, generalInfo || "", userName || "");
+        const answer = await generateResponse(
+          text,
+          generalInfo || "",
+          userName || ""
+        );
         setConversationHistory((prev) => {
           const copy = [...prev];
           const idx = copy.findIndex((e) => e.id === entry.id);
@@ -472,7 +491,8 @@ const InterviewSession: React.FC = () => {
         ? "Hindi"
         : "English";
 
-    const systemPrompt = `You are a real person in a job interview. your name is ${userName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
+    console.log("generateResponse - userName:", userName);
+    const systemPrompt = `You are a real person in a job interview. Your name is ${userName || 'the candidate'}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
 
 CRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.
 
@@ -559,7 +579,8 @@ Instructions:
         ? "Hindi"
         : "English";
 
-    const systemPrompt = `You are a real person in a job interview. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
+    console.log("generateResponseStream - userName:", userName);
+    const systemPrompt = `You are a real person in a job interview. Your name is ${userName || 'the candidate'}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
 
 CRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.
 
