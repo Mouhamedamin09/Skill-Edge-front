@@ -35,6 +35,8 @@ const InterviewSession: React.FC = () => {
   // Debug logging
   console.log("InterviewSession - Received state:", state);
   console.log("InterviewSession - userName:", userName);
+  console.log("InterviewSession - userName type:", typeof userName);
+  console.log("InterviewSession - userName length:", userName?.length);
 
   const [status, setStatus] = useState("Ready to start");
   const [error, setError] = useState("");
@@ -492,7 +494,10 @@ const InterviewSession: React.FC = () => {
         : "English";
 
     console.log("generateResponse - userName:", userName);
-    const systemPrompt = `You are a real person in a job interview. Your name is ${userName || 'the candidate'}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
+    console.log("generateResponse - userName value:", JSON.stringify(userName));
+    const finalUserName = userName || "the candidate";
+    console.log("generateResponse - finalUserName:", finalUserName);
+    const systemPrompt = `You are a real person in a job interview. Your name is ${finalUserName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
 
 CRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.
 
@@ -580,7 +585,10 @@ Instructions:
         : "English";
 
     console.log("generateResponseStream - userName:", userName);
-    const systemPrompt = `You are a real person in a job interview. Your name is ${userName || 'the candidate'}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
+    console.log("generateResponseStream - userName value:", JSON.stringify(userName));
+    const finalUserName = userName || "the candidate";
+    console.log("generateResponseStream - finalUserName:", finalUserName);
+    const systemPrompt = `You are a real person in a job interview. Your name is ${finalUserName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
 
 CRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.
 
