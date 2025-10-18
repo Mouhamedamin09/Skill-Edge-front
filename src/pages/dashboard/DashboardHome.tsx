@@ -100,7 +100,7 @@ const DashboardHome: React.FC = () => {
   const minutesLimit = isUnlimited
     ? -1
     : user.subscription.plan === "free"
-    ? 15
+    ? 5
     : minutesLeft + minutesUsed; // Pro supports top-ups, so cap is dynamic
 
   const usagePercentage =

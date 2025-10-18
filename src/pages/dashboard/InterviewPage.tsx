@@ -192,7 +192,7 @@ const InterviewPage: React.FC = () => {
   const minutesLimit = isUnlimited
     ? -1
     : user.subscription.plan === "free"
-    ? 15
+    ? 5
     : Math.max(0, Number(user.subscription.minutesLeft || 0)) + minutesUsed; // Pro dynamic cap
   const derivedMinutesLeft =
     minutesLimit === -1 ? -1 : Math.max(0, minutesLimit - minutesUsed);
