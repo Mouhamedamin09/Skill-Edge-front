@@ -46,19 +46,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <div className="dashboard-layout">
       {/* Mobile sidebar backdrop */}
-      {isMobile && sidebarOpen && (
+      {isMobile && (
         <div
-          className="sidebar-backdrop"
+          className={`sidebar-backdrop ${sidebarOpen ? "show" : ""}`}
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <motion.div
-        initial={false}
-        animate={{ x: isMobile ? (sidebarOpen ? 0 : -280) : 0 }}
-        className="sidebar"
-      >
+      <div className={`sidebar ${isMobile && sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <img
@@ -113,7 +109,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <span>Logout</span>
           </button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Main content */}
       <div className="main-content">

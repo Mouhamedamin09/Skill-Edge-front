@@ -392,16 +392,26 @@ const InterviewPage: React.FC = () => {
     info: string
   ): Promise<string> => {
     const personalContext = (info || "").trim();
-    const prompt = `You are a helpful interview assistant.
-If the following personal details are relevant, use them to tailor the answer; otherwise, ignore them and answer from your general knowledge.
 
-PERSONAL DETAILS (optional):\n${personalContext || "<none>"}
+    // Create a more human-like, conversational prompt
+    const prompt = `You are a real person in a job interview. Answer the interviewer's question naturally and conversationally, like a human would. 
 
-Question: "${question}"
-Requirements:
-- Be concise and clear (3-6 sentences)
-- Give practical, senior-level insight
-- If code helps, include short snippets only when necessary
+${personalContext ? `Some context about me: ${personalContext}\n` : ""}
+
+The interviewer just asked: "${question}"
+
+Instructions:
+- Answer like a real human being, not an AI
+- Use natural speech patterns, contractions, and casual language
+- Be conversational and engaging
+- If it's a technical question, explain it in simple terms
+- If it's about math, science, or any other topic, answer it naturally
+- If it's off-topic or personal, still answer it like a normal person would
+- Use "I" statements and personal experiences when relevant
+- Keep it conversational (2-4 sentences)
+- Don't sound robotic or formal
+- Show personality and confidence
+
 Answer:`;
 
     const response = await fetch(`${import.meta.env.VITE_API_URL}/ai/chat`, {
@@ -412,8 +422,8 @@ Answer:`;
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 150,
-        temperature: 0.7,
+        max_tokens: 200,
+        temperature: 0.8,
       }),
     });
     if (!response.ok) {
