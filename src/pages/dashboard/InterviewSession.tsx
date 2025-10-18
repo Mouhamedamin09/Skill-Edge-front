@@ -41,7 +41,7 @@ const InterviewSession: React.FC = () => {
     ConversationEntry[]
   >([]);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-  
+
   // Time tracking state
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [sessionMinutesUsed, setSessionMinutesUsed] = useState(0);
@@ -58,14 +58,20 @@ const InterviewSession: React.FC = () => {
   // Initialize time tracking
   useEffect(() => {
     if (!state) navigate("/dashboard/interview");
-    
+
     // Calculate initial remaining minutes
     const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
-    const isUnlimited = rawMinutesLeft === -1 || user?.subscription?.plan === "pro+";
+    const isUnlimited =
+      rawMinutesLeft === -1 || user?.subscription?.plan === "pro+";
     const minutesUsed = Math.max(0, Number(user?.usage?.totalMinutesUsed || 0));
-    const minutesLimit = isUnlimited ? -1 : user?.subscription?.plan === "free" ? 5 : Math.max(0, rawMinutesLeft) + minutesUsed;
-    const derivedMinutesLeft = minutesLimit === -1 ? -1 : Math.max(0, minutesLimit - minutesUsed);
-    
+    const minutesLimit = isUnlimited
+      ? -1
+      : user?.subscription?.plan === "free"
+      ? 5
+      : Math.max(0, rawMinutesLeft) + minutesUsed;
+    const derivedMinutesLeft =
+      minutesLimit === -1 ? -1 : Math.max(0, minutesLimit - minutesUsed);
+
     setRemainingMinutes(derivedMinutesLeft);
     setCanRecord(isUnlimited || derivedMinutesLeft > 0);
   }, [user, state, navigate]);
@@ -73,21 +79,24 @@ const InterviewSession: React.FC = () => {
   // Update user minutes on server
   const updateUserMinutes = async (minutesUsed: number) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/update-usage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ minutesUsed })
-      });
-      
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/update-usage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ minutesUsed }),
+        }
+      );
+
       if (response.ok) {
         const updatedUser = await response.json();
         setUser(updatedUser);
       }
     } catch (error) {
-      console.error('Failed to update user minutes:', error);
+      console.error("Failed to update user minutes:", error);
     }
   };
 
@@ -96,28 +105,41 @@ const InterviewSession: React.FC = () => {
     if (sessionStartTime && !isUnlimited()) {
       timeTrackerRef.current = window.setInterval(() => {
         const now = Date.now();
-        const elapsedMinutes = Math.floor((now - sessionStartTime) / (1000 * 60));
+        const elapsedMinutes = Math.floor(
+          (now - sessionStartTime) / (1000 * 60)
+        );
         const newSessionMinutes = Math.max(0, elapsedMinutes);
-        
+
         setSessionMinutesUsed(newSessionMinutes);
-        
+
         // Calculate remaining minutes
         const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
-        const minutesUsed = Math.max(0, Number(user?.usage?.totalMinutesUsed || 0));
-        const minutesLimit = user?.subscription?.plan === "free" ? 5 : Math.max(0, rawMinutesLeft) + minutesUsed;
-        const newRemaining = Math.max(0, minutesLimit - minutesUsed - newSessionMinutes);
-        
+        const minutesUsed = Math.max(
+          0,
+          Number(user?.usage?.totalMinutesUsed || 0)
+        );
+        const minutesLimit =
+          user?.subscription?.plan === "free"
+            ? 5
+            : Math.max(0, rawMinutesLeft) + minutesUsed;
+        const newRemaining = Math.max(
+          0,
+          minutesLimit - minutesUsed - newSessionMinutes
+        );
+
         setRemainingMinutes(newRemaining);
         setCanRecord(newRemaining > 0);
-        
+
         // If time runs out, stop recording
         if (newRemaining <= 0 && isRecording) {
           stopRecording();
-          setError("Time is up! No minutes left. Please upgrade your plan to continue.");
+          setError(
+            "Time is up! No minutes left. Please upgrade your plan to continue."
+          );
         }
       }, 1000); // Update every second
     }
-    
+
     return () => {
       if (timeTrackerRef.current) {
         clearInterval(timeTrackerRef.current);
@@ -165,11 +187,11 @@ const InterviewSession: React.FC = () => {
         audio: true,
       });
       streamRef.current = stream;
-      
+
       // Start time tracking
       setSessionStartTime(Date.now());
       setSessionMinutesUsed(0);
-      
+
       setTimeout(() => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -195,12 +217,12 @@ const InterviewSession: React.FC = () => {
     if (videoRef.current) videoRef.current.srcObject = null;
     setIsRecording(false);
     setIsProcessing(false);
-    
+
     // Stop time tracking and update user minutes
     if (sessionStartTime && sessionMinutesUsed > 0) {
       updateUserMinutes(sessionMinutesUsed);
     }
-    
+
     // Clear time tracking
     if (timeTrackerRef.current) {
       clearInterval(timeTrackerRef.current);
@@ -208,7 +230,7 @@ const InterviewSession: React.FC = () => {
     }
     setSessionStartTime(null);
     setSessionMinutesUsed(0);
-    
+
     setStatus("Screen capture stopped");
   };
 
@@ -217,10 +239,12 @@ const InterviewSession: React.FC = () => {
       setError("Please start screen capture first");
       return;
     }
-    
+
     // Check if recording is allowed based on remaining time
     if (!canRecord) {
-      setError("No minutes left. Please upgrade your plan to continue recording.");
+      setError(
+        "No minutes left. Please upgrade your plan to continue recording."
+      );
       return;
     }
     try {
@@ -247,8 +271,8 @@ const InterviewSession: React.FC = () => {
       setIsRecording(true);
       setStatus("Recording... Press SPACE to stop");
       // Auto-stop when remaining minutes elapse
-      if (!isUnlimited) {
-        const remainingSeconds = Math.max(0, Math.floor(minutesLeft * 60));
+      if (!isUnlimited()) {
+        const remainingSeconds = Math.max(0, Math.floor(remainingMinutes * 60));
         if (stopTimerRef.current) window.clearTimeout(stopTimerRef.current);
         stopTimerRef.current = window.setTimeout(() => {
           stopRecording();
@@ -587,8 +611,12 @@ Instructions:
             </div>
             <div className="time-info">
               <span className="time-label">Remaining:</span>
-              <span className={`time-value ${remainingMinutes <= 1 ? 'warning' : ''}`}>
-                {isUnlimited() ? '∞' : remainingMinutes} min
+              <span
+                className={`time-value ${
+                  remainingMinutes <= 1 ? "warning" : ""
+                }`}
+              >
+                {isUnlimited() ? "∞" : remainingMinutes} min
               </span>
             </div>
           </div>
