@@ -47,6 +47,7 @@ const InterviewSession: React.FC = () => {
   const [sessionMinutesUsed, setSessionMinutesUsed] = useState(0);
   const [remainingMinutes, setRemainingMinutes] = useState(0);
   const [canRecord, setCanRecord] = useState(true);
+  const [recordingStartTime, setRecordingStartTime] = useState<number | null>(null);
 
   const streamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -293,6 +294,7 @@ const InterviewSession: React.FC = () => {
       mediaRecorderRef.current.onstop = () => processAudio();
       mediaRecorderRef.current.start(100);
       setIsRecording(true);
+      setRecordingStartTime(Date.now());
       setStatus("Recording... Press SPACE to stop");
       // Auto-stop when remaining minutes elapse
       if (!isUnlimited()) {
@@ -314,8 +316,16 @@ const InterviewSession: React.FC = () => {
       mediaRecorderRef.current &&
       mediaRecorderRef.current.state === "recording"
     ) {
+      // Check minimum recording time (2 seconds)
+      const recordingDuration = recordingStartTime ? Date.now() - recordingStartTime : 0;
+      if (recordingDuration < 2000) {
+        setError("Please record for at least 2 seconds before stopping.");
+        return;
+      }
+      
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      setRecordingStartTime(null);
       setStatus("Processing audio...");
       if (stopTimerRef.current) {
         window.clearTimeout(stopTimerRef.current);
@@ -330,8 +340,11 @@ const InterviewSession: React.FC = () => {
       const audioBlob = new Blob(audioChunksRef.current, {
         type: (audioChunksRef.current[0] as any)?.type || "audio/webm",
       });
-      if (audioBlob.size === 0)
-        throw new Error("No audio data recorded. Please try again.");
+      
+      // Check if we have meaningful audio data (at least 1KB)
+      if (audioBlob.size < 1024) {
+        throw new Error("Please speak for at least 2-3 seconds before stopping recording.");
+      }
 
       // Estimate and clamp consumption before processing
       let approxSeconds = Math.max(1, Math.round(audioBlob.size / 4096));
@@ -357,7 +370,7 @@ const InterviewSession: React.FC = () => {
       };
       setConversationHistory((p) => [...p, entry]);
       try {
-        await generateResponseStream(text, generalInfo || "", (chunk) => {
+        await generateResponseStream(text, generalInfo || "", userName || "", (chunk) => {
           streamed += chunk;
           setConversationHistory((prev) => {
             const copy = [...prev];
@@ -367,7 +380,7 @@ const InterviewSession: React.FC = () => {
           });
         });
       } catch {
-        const answer = await generateResponse(text, generalInfo || "");
+        const answer = await generateResponse(text, generalInfo || "", userName || "");
         setConversationHistory((prev) => {
           const copy = [...prev];
           const idx = copy.findIndex((e) => e.id === entry.id);
@@ -428,7 +441,8 @@ const InterviewSession: React.FC = () => {
 
   const generateResponse = async (
     question: string,
-    info: string
+    info: string,
+    userName: string
   ): Promise<string> => {
     const personalContext = (info || "").trim();
     const languageName =
@@ -514,6 +528,7 @@ Instructions:
   const generateResponseStream = async (
     question: string,
     info: string,
+    userName: string,
     onToken: (chunk: string) => void
   ): Promise<void> => {
     const personalContext = (info || "").trim();
