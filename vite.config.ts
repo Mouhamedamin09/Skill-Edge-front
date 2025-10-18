@@ -31,6 +31,12 @@ export default defineConfig(({ mode }) => ({
     host: "0.0.0.0",
     port: 3000,
   },
-  // Removed hardcoded define - let Vite handle env vars naturally
-  // This allows .env and .env.local to work properly
+  define: {
+    // Only set API URL for production builds, let .env work for dev
+    ...(mode === 'production' && {
+      "import.meta.env.VITE_API_URL": JSON.stringify(
+        "https://monkfish-app-nnhdy.ondigitalocean.app/api"
+      ),
+    }),
+  },
 }));
