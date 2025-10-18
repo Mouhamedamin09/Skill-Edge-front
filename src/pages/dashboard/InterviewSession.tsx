@@ -240,10 +240,15 @@ const InterviewSession: React.FC = () => {
 
     // Update user minutes with final session time
     if (sessionStartTime && sessionMinutesUsed > 0) {
-      console.log(`Stopping screen capture - updating ${sessionMinutesUsed} minutes`);
+      console.log(
+        `Stopping screen capture - updating ${sessionMinutesUsed} minutes`
+      );
       updateUserMinutes(sessionMinutesUsed);
     } else {
-      console.log("No session time to update:", { sessionStartTime, sessionMinutesUsed });
+      console.log("No session time to update:", {
+        sessionStartTime,
+        sessionMinutesUsed,
+      });
     }
 
     // Clear time tracking state
@@ -453,7 +458,7 @@ const InterviewSession: React.FC = () => {
         ? "Hindi"
         : "English";
 
-    const systemPrompt = `You are a real person in a job interview. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
+    const systemPrompt = `You are a real person in a job interview. your name is ${userName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
 
 CRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.
 
