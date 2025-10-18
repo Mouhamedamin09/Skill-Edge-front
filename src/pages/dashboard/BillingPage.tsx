@@ -1,3 +1,4 @@
+// Force rebuild - test plan removed
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -127,25 +128,6 @@ const BillingPage: React.FC = () => {
         "Email support",
       ],
       current: user.subscription.plan === "free",
-      popular: false,
-    },
-    {
-      id: "test",
-      name: "Test Plan",
-      price: "€1",
-      period: "week",
-      description: "LOCAL TESTING ONLY - 10 minutes",
-      icon: QrCode,
-      color: "#f59e0b",
-      bgColor: "#fef3c7",
-      features: [
-        "10 minutes total",
-        "GPT-4 responses",
-        "All interview types",
-        "7 days access",
-        "FOR TESTING CASH PAYMENTS",
-      ],
-      current: user.subscription.plan === "test",
       popular: false,
     },
     {
