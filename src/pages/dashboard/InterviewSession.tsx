@@ -81,6 +81,7 @@ const InterviewSession: React.FC = () => {
     const derivedMinutesLeft =
       minutesLimit === -1 ? -1 : Math.max(0, minutesLimit - minutesUsed);
 
+    console.log("Initial calculation - rawMinutesLeft:", rawMinutesLeft, "minutesUsed:", minutesUsed, "minutesLimit:", minutesLimit, "derivedMinutesLeft:", derivedMinutesLeft);
     setRemainingMinutes(derivedMinutesLeft);
     setCanRecord(isUnlimited || derivedMinutesLeft > 0);
   }, [user, state, navigate]);
@@ -125,7 +126,7 @@ const InterviewSession: React.FC = () => {
 
         setSessionMinutesUsed(newSessionMinutes);
 
-        // Calculate remaining minutes
+        // Calculate remaining minutes (don't subtract session time yet)
         const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
         const minutesUsed = Math.max(
           0,
@@ -137,14 +138,17 @@ const InterviewSession: React.FC = () => {
             : Math.max(0, rawMinutesLeft) + minutesUsed;
         const newRemaining = Math.max(
           0,
-          minutesLimit - minutesUsed - newSessionMinutes
+          minutesLimit - minutesUsed
         );
 
         setRemainingMinutes(newRemaining);
         setCanRecord(newRemaining > 0);
 
+        console.log("Time tracking - newRemaining:", newRemaining, "canRecord:", newRemaining > 0);
+
         // If time runs out, stop recording
         if (newRemaining <= 0 && isRecording) {
+          console.log("Time is up! Stopping recording");
           stopRecording();
           setError(
             "Time is up! No minutes left. Please upgrade your plan to continue."
@@ -585,7 +589,10 @@ Instructions:
         : "English";
 
     console.log("generateResponseStream - userName:", userName);
-    console.log("generateResponseStream - userName value:", JSON.stringify(userName));
+    console.log(
+      "generateResponseStream - userName value:",
+      JSON.stringify(userName)
+    );
     const finalUserName = userName || "the candidate";
     console.log("generateResponseStream - finalUserName:", finalUserName);
     const systemPrompt = `You are a real person in a job interview. Your name is ${finalUserName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
