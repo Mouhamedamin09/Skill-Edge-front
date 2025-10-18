@@ -79,6 +79,7 @@ const InterviewSession: React.FC = () => {
   // Update user minutes on server
   const updateUserMinutes = async (minutesUsed: number) => {
     try {
+      console.log(`Updating user minutes: ${minutesUsed} minutes used`);
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/update-usage`,
         {
@@ -93,7 +94,10 @@ const InterviewSession: React.FC = () => {
 
       if (response.ok) {
         const updatedUser = await response.json();
+        console.log("User minutes updated successfully:", updatedUser);
         setUser(updatedUser);
+      } else {
+        console.error("Failed to update user minutes:", response.status);
       }
     } catch (error) {
       console.error("Failed to update user minutes:", error);
@@ -178,6 +182,16 @@ const InterviewSession: React.FC = () => {
     return () => window.removeEventListener("beforeunload", beforeUnload);
   }, [isRecording]);
 
+  // Cleanup effect - update minutes when component unmounts
+  useEffect(() => {
+    return () => {
+      // Update minutes when component unmounts (user navigates away)
+      if (sessionStartTime && sessionMinutesUsed > 0) {
+        updateUserMinutes(sessionMinutesUsed);
+      }
+    };
+  }, [sessionStartTime, sessionMinutesUsed]);
+
   const startScreenCapture = async () => {
     try {
       setError("");
@@ -218,16 +232,21 @@ const InterviewSession: React.FC = () => {
     setIsRecording(false);
     setIsProcessing(false);
 
-    // Stop time tracking and update user minutes
-    if (sessionStartTime && sessionMinutesUsed > 0) {
-      updateUserMinutes(sessionMinutesUsed);
-    }
-
-    // Clear time tracking
+    // Stop time tracking
     if (timeTrackerRef.current) {
       clearInterval(timeTrackerRef.current);
       timeTrackerRef.current = null;
     }
+
+    // Update user minutes with final session time
+    if (sessionStartTime && sessionMinutesUsed > 0) {
+      console.log(`Stopping screen capture - updating ${sessionMinutesUsed} minutes`);
+      updateUserMinutes(sessionMinutesUsed);
+    } else {
+      console.log("No session time to update:", { sessionStartTime, sessionMinutesUsed });
+    }
+
+    // Clear time tracking state
     setSessionStartTime(null);
     setSessionMinutesUsed(0);
 
