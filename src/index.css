@@ -7851,28 +7851,28 @@ select {
   .auth-page {
     padding: 1rem;
   }
-  
+
   .auth-container {
     max-width: 100%;
     padding: 0;
   }
-  
+
   .auth-card {
     padding: 2rem 1.5rem;
     margin: 0;
     border-radius: var(--radius-xl);
   }
-  
+
   .auth-title {
     font-size: 1.75rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .auth-subtitle {
     font-size: 1rem;
     margin-bottom: 2rem;
   }
-  
+
   /* Larger form inputs for mobile */
   .form-group input,
   .form-group textarea {
@@ -7881,30 +7881,30 @@ select {
     min-height: 56px;
     border-radius: var(--radius-lg);
   }
-  
+
   .form-group label {
     font-size: 0.95rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
     color: var(--text-primary);
   }
-  
+
   /* Form row adjustments for mobile */
   .form-row {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   /* Password input improvements */
   .password-input {
     position: relative;
   }
-  
+
   .password-input input {
     padding-right: 3.5rem;
   }
-  
+
   .password-toggle {
     position: absolute;
     right: 1rem;
@@ -7917,7 +7917,7 @@ select {
     align-items: center;
     justify-content: center;
   }
-  
+
   /* Button improvements */
   .btn-primary,
   .btn-outline {
@@ -7926,13 +7926,13 @@ select {
     font-weight: 600;
     padding: 1rem 2rem;
   }
-  
+
   /* Auth footer */
   .auth-footer {
     font-size: 0.95rem;
     padding: 1.5rem 0;
   }
-  
+
   .auth-link {
     font-weight: 600;
   }
@@ -7943,25 +7943,519 @@ select {
   .auth-page {
     padding: 0.5rem;
   }
-  
+
   .auth-card {
     padding: 1.5rem 1rem;
   }
-  
+
   .auth-title {
     font-size: 1.5rem;
   }
-  
+
   .form-group input,
   .form-group textarea {
     padding: 0.875rem 1rem;
     font-size: 16px; /* Prevents zoom on iOS */
     min-height: 52px;
   }
-  
+
   .btn-primary,
   .btn-outline {
     min-height: 52px;
     font-size: 0.95rem;
+  }
+}
+
+/* ===== DASHBOARD MOBILE IMPROVEMENTS ===== */
+
+/* Dashboard Home Mobile */
+@media (max-width: 768px) {
+  .dashboard-home {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  /* Welcome Section Mobile */
+  .welcome-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+  }
+  
+  .welcome-content {
+    order: 1;
+  }
+  
+  .welcome-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 1rem;
+    margin-bottom: 0;
+  }
+  
+  .start-interview-btn {
+    order: 2;
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 56px;
+  }
+  
+  /* Stats Grid Mobile */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .stat-card {
+    padding: 1.25rem;
+  }
+  
+  .stat-header {
+    margin-bottom: 1rem;
+  }
+  
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+  
+  .stat-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  .stat-unit,
+  .stat-total {
+    font-size: 0.9rem;
+  }
+  
+  /* Usage Alert Mobile */
+  .usage-alert {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+  
+  .alert-content h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .alert-content p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .alert-action {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+  
+  /* Interview Setup Modal Mobile */
+  .interview-setup {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+    border-radius: var(--radius-xl);
+  }
+  
+  .setup-header {
+    padding: 1.5rem 1.5rem 1rem;
+  }
+  
+  .setup-header h3 {
+    font-size: 1.25rem;
+  }
+  
+  .interview-types {
+    padding: 1rem 1.5rem 1.5rem;
+    gap: 1rem;
+  }
+  
+  .interview-type-card {
+    padding: 1.25rem;
+    text-align: left;
+  }
+  
+  .type-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+  
+  .type-content h4 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .type-content p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  /* Success Message Mobile */
+  .bg-green-50 {
+    margin: 0 0 1rem 0;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+  }
+  
+  .bg-green-50 .flex {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+  
+  .bg-green-50 button {
+    align-self: center;
+    padding: 0.5rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .dashboard-home {
+    padding: 0.75rem;
+  }
+  
+  .welcome-section {
+    padding: 1.5rem 1rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .start-interview-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 52px;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+  
+  .stat-value {
+    font-size: 1.25rem;
+  }
+  
+  .usage-alert {
+    padding: 1.25rem;
+  }
+  
+  .interview-setup {
+    margin: 0.5rem;
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100vh - 1rem);
+  }
+  
+  .setup-header {
+    padding: 1.25rem 1.25rem 0.75rem;
+  }
+  
+  .interview-types {
+    padding: 0.75rem 1.25rem 1.25rem;
+  }
+  
+  .interview-type-card {
+    padding: 1rem;
+  }
+  
+  .type-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ===== INTERVIEW PAGE MOBILE IMPROVEMENTS ===== */
+
+@media (max-width: 768px) {
+  .interview-page {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  .interview-container {
+    padding: 0;
+  }
+  
+  .question-card {
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .question-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .question-title {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+  
+  .question-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .timer-section {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .timer-display {
+    font-size: 2rem;
+  }
+  
+  .timer-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .timer-btn {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+  
+  .interview-actions {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .action-btn {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 52px;
+  }
+  
+  .interview-progress {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress-bar {
+    height: 8px;
+  }
+  
+  .progress-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .interview-page {
+    padding: 0.75rem;
+  }
+  
+  .question-card {
+    padding: 1.25rem;
+  }
+  
+  .question-title {
+    font-size: 1.1rem;
+  }
+  
+  .timer-section {
+    padding: 0.875rem;
+  }
+  
+  .timer-display {
+    font-size: 1.75rem;
+  }
+  
+  .timer-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+  
+  .action-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 48px;
+  }
+}
+
+/* ===== BILLING PAGE MOBILE IMPROVEMENTS ===== */
+
+@media (max-width: 768px) {
+  .billing-page {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  .billing-container {
+    padding: 0;
+  }
+  
+  .plan-card {
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .plan-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .plan-name {
+    font-size: 1.5rem;
+  }
+  
+  .plan-price {
+    font-size: 2.5rem;
+  }
+  
+  .plan-period {
+    font-size: 1rem;
+  }
+  
+  .plan-features {
+    margin: 1.5rem 0;
+  }
+  
+  .feature-item {
+    padding: 0.75rem 0;
+    font-size: 0.95rem;
+  }
+  
+  .plan-button {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 52px;
+  }
+  
+  .current-plan-badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .billing-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .usage-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .usage-card {
+    padding: 1.25rem;
+  }
+  
+  .usage-value {
+    font-size: 1.5rem;
+  }
+  
+  .usage-label {
+    font-size: 0.9rem;
+  }
+  
+  .billing-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .billing-btn {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 480px) {
+  .billing-page {
+    padding: 0.75rem;
+  }
+  
+  .plan-card {
+    padding: 1.25rem 1rem;
+  }
+  
+  .plan-name {
+    font-size: 1.25rem;
+  }
+  
+  .plan-price {
+    font-size: 2rem;
+  }
+  
+  .plan-features {
+    margin: 1.25rem 0;
+  }
+  
+  .feature-item {
+    padding: 0.625rem 0;
+    font-size: 0.9rem;
+  }
+  
+  .plan-button {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 48px;
+  }
+  
+  .billing-section {
+    padding: 1.25rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+  }
+  
+  .usage-card {
+    padding: 1rem;
+  }
+  
+  .usage-value {
+    font-size: 1.25rem;
+  }
+  
+  .billing-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 48px;
   }
 }
