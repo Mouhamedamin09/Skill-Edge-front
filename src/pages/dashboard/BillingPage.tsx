@@ -34,6 +34,10 @@ const BillingPage: React.FC = () => {
   const API_BASE_URL =
     import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
+  // DEBUG: Log the API URL
+  console.log("🔍 BillingPage API_BASE_URL:", API_BASE_URL);
+  console.log("🔍 import.meta.env.VITE_API_URL:", import.meta.env.VITE_API_URL);
+
   useEffect(() => {
     // Check for success or cancel from Stripe Checkout
     const success = searchParams.get("success");
@@ -127,6 +131,25 @@ const BillingPage: React.FC = () => {
         "Email support",
       ],
       current: user.subscription.plan === "free",
+      popular: false,
+    },
+    {
+      id: "test",
+      name: "Test Plan",
+      price: "€1",
+      period: "week",
+      description: "LOCAL TESTING ONLY - 10 minutes",
+      icon: QrCode,
+      color: "#f59e0b",
+      bgColor: "#fef3c7",
+      features: [
+        "10 minutes total",
+        "GPT-4 responses",
+        "All interview types",
+        "7 days access",
+        "FOR TESTING CASH PAYMENTS",
+      ],
+      current: user.subscription.plan === "test",
       popular: false,
     },
     {
