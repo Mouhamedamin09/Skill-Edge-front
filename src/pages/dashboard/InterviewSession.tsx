@@ -81,7 +81,16 @@ const InterviewSession: React.FC = () => {
     const derivedMinutesLeft =
       minutesLimit === -1 ? -1 : Math.max(0, minutesLimit - minutesUsed);
 
-    console.log("Initial calculation - rawMinutesLeft:", rawMinutesLeft, "minutesUsed:", minutesUsed, "minutesLimit:", minutesLimit, "derivedMinutesLeft:", derivedMinutesLeft);
+    console.log(
+      "Initial calculation - rawMinutesLeft:",
+      rawMinutesLeft,
+      "minutesUsed:",
+      minutesUsed,
+      "minutesLimit:",
+      minutesLimit,
+      "derivedMinutesLeft:",
+      derivedMinutesLeft
+    );
     setRemainingMinutes(derivedMinutesLeft);
     setCanRecord(isUnlimited || derivedMinutesLeft > 0);
   }, [user, state, navigate]);
@@ -114,9 +123,9 @@ const InterviewSession: React.FC = () => {
     }
   };
 
-  // Time tracking effect
+  // Time tracking effect - only track when recording
   useEffect(() => {
-    if (sessionStartTime && !isUnlimited()) {
+    if (isRecording && sessionStartTime && !isUnlimited()) {
       timeTrackerRef.current = window.setInterval(() => {
         const now = Date.now();
         const elapsedMinutes = Math.floor(
@@ -126,34 +135,7 @@ const InterviewSession: React.FC = () => {
 
         setSessionMinutesUsed(newSessionMinutes);
 
-        // Calculate remaining minutes (don't subtract session time yet)
-        const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
-        const minutesUsed = Math.max(
-          0,
-          Number(user?.usage?.totalMinutesUsed || 0)
-        );
-        const minutesLimit =
-          user?.subscription?.plan === "free"
-            ? 5
-            : Math.max(0, rawMinutesLeft) + minutesUsed;
-        const newRemaining = Math.max(
-          0,
-          minutesLimit - minutesUsed
-        );
-
-        setRemainingMinutes(newRemaining);
-        setCanRecord(newRemaining > 0);
-
-        console.log("Time tracking - newRemaining:", newRemaining, "canRecord:", newRemaining > 0);
-
-        // If time runs out, stop recording
-        if (newRemaining <= 0 && isRecording) {
-          console.log("Time is up! Stopping recording");
-          stopRecording();
-          setError(
-            "Time is up! No minutes left. Please upgrade your plan to continue."
-          );
-        }
+        console.log("Time tracking - sessionMinutesUsed:", newSessionMinutes);
       }, 1000); // Update every second
     }
 
@@ -162,7 +144,18 @@ const InterviewSession: React.FC = () => {
         clearInterval(timeTrackerRef.current);
       }
     };
-  }, [sessionStartTime, user, isRecording]);
+  }, [isRecording, sessionStartTime, user]);
+
+  // Check if recording should be stopped due to time limit
+  useEffect(() => {
+    if (isRecording && !isUnlimited() && remainingMinutes <= 0) {
+      console.log("Time is up! Stopping recording");
+      stopRecording();
+      setError(
+        "Time is up! No minutes left. Please upgrade your plan to continue."
+      );
+    }
+  }, [isRecording, remainingMinutes]);
 
   const isUnlimited = () => {
     const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
