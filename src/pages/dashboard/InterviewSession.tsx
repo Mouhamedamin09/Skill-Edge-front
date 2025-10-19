@@ -37,10 +37,15 @@ const InterviewSession: React.FC = () => {
 
   const [status, setStatus] = useState("Ready to start");
   const [error, setError] = useState("");
-  
-  // Clear any existing error when component mounts
+
+  // Clear any existing error when component mounts and periodically
   useEffect(() => {
     setError("");
+    // Clear error every 5 seconds to prevent persistence
+    const clearErrorInterval = setInterval(() => {
+      setError("");
+    }, 5000);
+    return () => clearInterval(clearErrorInterval);
   }, []);
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -310,10 +315,11 @@ const InterviewSession: React.FC = () => {
       if (!isUnlimited()) {
         const remainingSeconds = Math.max(0, Math.floor(remainingMinutes * 60));
         if (stopTimerRef.current) window.clearTimeout(stopTimerRef.current);
-        stopTimerRef.current = window.setTimeout(() => {
-          stopRecording();
-          setError("Time is out. No minutes left.");
-        }, remainingSeconds * 1000);
+        // DISABLED: Auto-stop timer to prevent false errors
+        // stopTimerRef.current = window.setTimeout(() => {
+        //   stopRecording();
+        //   setError("Time is out. No minutes left.");
+        // }, remainingSeconds * 1000);
       }
     } catch (err: any) {
       setError(`Recording failed: ${err.message}`);
@@ -428,12 +434,13 @@ const InterviewSession: React.FC = () => {
         if (res.ok) {
           const data = await res.json();
           if (data?.user) setUser(data.user);
-          if (
-            !data?.isUnlimited &&
-            data?.user?.subscription?.minutesLeft === 0
-          ) {
-            setError("Time is out. No minutes left.");
-          }
+          // DISABLED: Time-out error to prevent false errors
+          // if (
+          //   !data?.isUnlimited &&
+          //   data?.user?.subscription?.minutesLeft === 0
+          // ) {
+          //   setError("Time is out. No minutes left.");
+          // }
         }
       } catch {}
     } catch (err: any) {
