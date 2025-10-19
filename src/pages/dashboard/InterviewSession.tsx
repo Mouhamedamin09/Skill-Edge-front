@@ -37,6 +37,8 @@ const InterviewSession: React.FC = () => {
   console.log("InterviewSession - userName:", userName);
   console.log("InterviewSession - userName type:", typeof userName);
   console.log("InterviewSession - userName length:", userName?.length);
+  console.log("InterviewSession - user:", user);
+  console.log("InterviewSession - user.subscription:", user?.subscription);
 
   const [status, setStatus] = useState("Ready to start");
   const [error, setError] = useState("");
@@ -73,21 +75,25 @@ const InterviewSession: React.FC = () => {
     const isUnlimited =
       rawMinutesLeft === -1 || user?.subscription?.plan === "pro+";
     const minutesUsed = Math.max(0, Number(user?.usage?.totalMinutesUsed || 0));
-    const minutesLimit = isUnlimited
-      ? -1
-      : user?.subscription?.plan === "free"
-      ? 5
-      : Math.max(0, rawMinutesLeft) + minutesUsed;
-    const derivedMinutesLeft =
-      minutesLimit === -1 ? -1 : Math.max(0, minutesLimit - minutesUsed);
+    
+    let derivedMinutesLeft;
+    if (isUnlimited) {
+      derivedMinutesLeft = -1;
+    } else if (user?.subscription?.plan === "free") {
+      // For free plan, remaining minutes = 5 - used minutes
+      derivedMinutesLeft = Math.max(0, 5 - minutesUsed);
+    } else {
+      // For pro plan, remaining minutes = rawMinutesLeft
+      derivedMinutesLeft = Math.max(0, rawMinutesLeft);
+    }
 
     console.log(
       "Initial calculation - rawMinutesLeft:",
       rawMinutesLeft,
       "minutesUsed:",
       minutesUsed,
-      "minutesLimit:",
-      minutesLimit,
+      "plan:",
+      user?.subscription?.plan,
       "derivedMinutesLeft:",
       derivedMinutesLeft
     );
@@ -149,7 +155,7 @@ const InterviewSession: React.FC = () => {
   // Check if recording should be stopped due to time limit
   useEffect(() => {
     if (isRecording && !isUnlimited() && remainingMinutes <= 0) {
-      console.log("Time is up! Stopping recording");
+      console.log("Time is up! Stopping recording - remainingMinutes:", remainingMinutes);
       stopRecording();
       setError(
         "Time is up! No minutes left. Please upgrade your plan to continue."
