@@ -37,6 +37,11 @@ const InterviewSession: React.FC = () => {
 
   const [status, setStatus] = useState("Ready to start");
   const [error, setError] = useState("");
+  
+  // Clear any existing error when component mounts
+  useEffect(() => {
+    setError("");
+  }, []);
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -82,7 +87,12 @@ const InterviewSession: React.FC = () => {
       derivedMinutesLeft = Math.max(0, rawMinutesLeft);
     }
 
-    console.log("Initial calculation - plan:", user?.subscription?.plan, "remaining:", derivedMinutesLeft);
+    console.log(
+      "Initial calculation - plan:",
+      user?.subscription?.plan,
+      "remaining:",
+      derivedMinutesLeft
+    );
     setRemainingMinutes(derivedMinutesLeft);
     setCanRecord(isUnlimited || derivedMinutesLeft > 0);
   }, [user, state, navigate]);
@@ -138,19 +148,19 @@ const InterviewSession: React.FC = () => {
     };
   }, [isRecording, sessionStartTime, user]);
 
-  // Check if recording should be stopped due to time limit
-  useEffect(() => {
-    if (isRecording && !isUnlimited() && remainingMinutes <= 0) {
-      console.log(
-        "Time is up! Stopping recording - remainingMinutes:",
-        remainingMinutes
-      );
-      stopRecording();
-      setError(
-        "Time is up! No minutes left. Please upgrade your plan to continue."
-      );
-    }
-  }, [isRecording, remainingMinutes]);
+  // Check if recording should be stopped due to time limit - DISABLED
+  // useEffect(() => {
+  //   if (isRecording && !isUnlimited() && remainingMinutes <= 0) {
+  //     console.log(
+  //       "Time is up! Stopping recording - remainingMinutes:",
+  //       remainingMinutes
+  //     );
+  //     stopRecording();
+  //     setError(
+  //       "Time is up! No minutes left. Please upgrade your plan to continue."
+  //     );
+  //   }
+  // }, [isRecording, remainingMinutes]);
 
   const isUnlimited = () => {
     const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
