@@ -32,13 +32,8 @@ const InterviewSession: React.FC = () => {
   } = state || {};
   const { user, setUser } = useAuth();
 
-  // Debug logging
-  console.log("InterviewSession - Received state:", state);
+  // Debug logging (reduced)
   console.log("InterviewSession - userName:", userName);
-  console.log("InterviewSession - userName type:", typeof userName);
-  console.log("InterviewSession - userName length:", userName?.length);
-  console.log("InterviewSession - user:", user);
-  console.log("InterviewSession - user.subscription:", user?.subscription);
 
   const [status, setStatus] = useState("Ready to start");
   const [error, setError] = useState("");
@@ -75,7 +70,7 @@ const InterviewSession: React.FC = () => {
     const isUnlimited =
       rawMinutesLeft === -1 || user?.subscription?.plan === "pro+";
     const minutesUsed = Math.max(0, Number(user?.usage?.totalMinutesUsed || 0));
-    
+
     let derivedMinutesLeft;
     if (isUnlimited) {
       derivedMinutesLeft = -1;
@@ -87,16 +82,7 @@ const InterviewSession: React.FC = () => {
       derivedMinutesLeft = Math.max(0, rawMinutesLeft);
     }
 
-    console.log(
-      "Initial calculation - rawMinutesLeft:",
-      rawMinutesLeft,
-      "minutesUsed:",
-      minutesUsed,
-      "plan:",
-      user?.subscription?.plan,
-      "derivedMinutesLeft:",
-      derivedMinutesLeft
-    );
+    console.log("Initial calculation - plan:", user?.subscription?.plan, "remaining:", derivedMinutesLeft);
     setRemainingMinutes(derivedMinutesLeft);
     setCanRecord(isUnlimited || derivedMinutesLeft > 0);
   }, [user, state, navigate]);
@@ -141,7 +127,7 @@ const InterviewSession: React.FC = () => {
 
         setSessionMinutesUsed(newSessionMinutes);
 
-        console.log("Time tracking - sessionMinutesUsed:", newSessionMinutes);
+        // console.log("Time tracking - sessionMinutesUsed:", newSessionMinutes);
       }, 1000); // Update every second
     }
 
@@ -155,7 +141,10 @@ const InterviewSession: React.FC = () => {
   // Check if recording should be stopped due to time limit
   useEffect(() => {
     if (isRecording && !isUnlimited() && remainingMinutes <= 0) {
-      console.log("Time is up! Stopping recording - remainingMinutes:", remainingMinutes);
+      console.log(
+        "Time is up! Stopping recording - remainingMinutes:",
+        remainingMinutes
+      );
       stopRecording();
       setError(
         "Time is up! No minutes left. Please upgrade your plan to continue."
@@ -496,8 +485,6 @@ const InterviewSession: React.FC = () => {
         ? "Hindi"
         : "English";
 
-    console.log("generateResponse - userName:", userName);
-    console.log("generateResponse - userName value:", JSON.stringify(userName));
     const finalUserName = userName || "the candidate";
     console.log("generateResponse - finalUserName:", finalUserName);
     const systemPrompt = `You are a real person in a job interview. Your name is ${finalUserName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
@@ -587,11 +574,6 @@ Instructions:
         ? "Hindi"
         : "English";
 
-    console.log("generateResponseStream - userName:", userName);
-    console.log(
-      "generateResponseStream - userName value:",
-      JSON.stringify(userName)
-    );
     const finalUserName = userName || "the candidate";
     console.log("generateResponseStream - finalUserName:", finalUserName);
     const systemPrompt = `You are a real person in a job interview. Your name is ${finalUserName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
