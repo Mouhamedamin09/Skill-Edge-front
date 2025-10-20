@@ -65,6 +65,7 @@ const InterviewSession: React.FC = () => {
   );
   const [lastMinuteUpdate, setLastMinuteUpdate] = useState(0);
   const [isUpdatingMinutes, setIsUpdatingMinutes] = useState(false);
+  const [isSessionActive, setIsSessionActive] = useState(false);
 
   const streamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -115,8 +116,11 @@ const InterviewSession: React.FC = () => {
         setUser(updatedUser);
 
         // Update remaining minutes from the backend response
-        const minutesLeft = Number(updatedUser.subscription?.minutesLeft ?? 0);
+        const minutesLeft = Number(
+          updatedUser.user?.subscription?.minutesLeft ?? 0
+        );
         setRemainingMinutes(minutesLeft);
+        setCanRecord(minutesLeft > 0 || minutesLeft === -1);
         console.log("Updated remaining minutes from backend:", minutesLeft);
       } else {
         console.error("Failed to update user minutes:", response.status);
@@ -126,26 +130,36 @@ const InterviewSession: React.FC = () => {
     }
   };
 
-  // Simple minute tracking - send 1 minute to backend every minute
+  // Continuous minute tracking - runs during entire session, not just recording
   useEffect(() => {
-    if (isRecording && sessionStartTime) {
+    if (isSessionActive && sessionStartTime) {
+      console.log("🕐 Starting continuous minute tracking");
+
       timeTrackerRef.current = window.setInterval(async () => {
         const now = Date.now();
         const elapsedMinutes = Math.floor(
           (now - sessionStartTime) / (1000 * 60)
         );
 
+        // Update session minutes used
         setSessionMinutesUsed(elapsedMinutes);
 
-        // Send 1 minute to backend every minute
-        if (elapsedMinutes > lastMinuteUpdate) {
-          console.log(`🕐 Sending 1 minute to backend`);
+        // Send 1 minute to backend every minute (only if we haven't sent this minute yet)
+        if (elapsedMinutes > lastMinuteUpdate && elapsedMinutes > 0) {
+          console.log(
+            `🕐 Sending ${
+              elapsedMinutes - lastMinuteUpdate
+            } minute(s) to backend`
+          );
 
           setIsUpdatingMinutes(true);
           try {
-            await updateUserMinutes(1); // Always send exactly 1 minute
+            const minutesToSend = elapsedMinutes - lastMinuteUpdate;
+            await updateUserMinutes(minutesToSend);
             setLastMinuteUpdate(elapsedMinutes);
-            console.log(`✅ Successfully sent 1 minute to backend`);
+            console.log(
+              `✅ Successfully sent ${minutesToSend} minute(s) to backend`
+            );
           } catch (error) {
             console.error("Failed to update minutes:", error);
           } finally {
@@ -154,9 +168,12 @@ const InterviewSession: React.FC = () => {
         }
 
         // Check if time is up (backend will return 0 minutesLeft)
-        if (remainingMinutes <= 0) {
-          console.log("⏰ Time limit reached! Stopping recording.");
-          stopRecording();
+        if (remainingMinutes <= 0 && !isUnlimited()) {
+          console.log("⏰ Time limit reached! Stopping session.");
+          setIsSessionActive(false);
+          if (isRecording) {
+            stopRecording();
+          }
           setError(
             "Time is up! No minutes left. Please upgrade your plan to continue."
           );
@@ -166,10 +183,18 @@ const InterviewSession: React.FC = () => {
 
     return () => {
       if (timeTrackerRef.current) {
+        console.log("🕐 Stopping minute tracking");
         clearInterval(timeTrackerRef.current);
+        timeTrackerRef.current = null;
       }
     };
-  }, [isRecording, sessionStartTime, remainingMinutes, lastMinuteUpdate]);
+  }, [
+    isSessionActive,
+    sessionStartTime,
+    remainingMinutes,
+    lastMinuteUpdate,
+    isRecording,
+  ]);
 
   // Check if recording should be stopped due to time limit - DISABLED
   // useEffect(() => {
@@ -216,15 +241,17 @@ const InterviewSession: React.FC = () => {
     return () => window.removeEventListener("beforeunload", beforeUnload);
   }, [isRecording]);
 
-  // Cleanup effect - update minutes when component unmounts
+  // Cleanup effect - stop tracking when component unmounts
   useEffect(() => {
     return () => {
-      // Update minutes when component unmounts (user navigates away)
-      if (sessionStartTime && sessionMinutesUsed > 0) {
-        updateUserMinutes(sessionMinutesUsed);
+      // Stop session tracking when component unmounts
+      if (timeTrackerRef.current) {
+        clearInterval(timeTrackerRef.current);
+        timeTrackerRef.current = null;
       }
+      setIsSessionActive(false);
     };
-  }, [sessionStartTime, sessionMinutesUsed]);
+  }, []);
 
   const startScreenCapture = async () => {
     try {
@@ -250,6 +277,7 @@ const InterviewSession: React.FC = () => {
       setSessionStartTime(Date.now());
       setSessionMinutesUsed(0);
       setLastMinuteUpdate(0);
+      setIsSessionActive(true);
 
       setTimeout(() => {
         if (videoRef.current) {
@@ -291,6 +319,7 @@ const InterviewSession: React.FC = () => {
     setSessionStartTime(null);
     setSessionMinutesUsed(0);
     setLastMinuteUpdate(0);
+    setIsSessionActive(false);
 
     setStatus("Screen capture stopped");
   };
@@ -710,6 +739,9 @@ Instructions:
                 }`}
               >
                 {isUnlimited() ? "∞" : remainingMinutes} min
+                {isUpdatingMinutes && (
+                  <span className="updating-indicator">🔄</span>
+                )}
               </span>
             </div>
           </div>
