@@ -7,7 +7,6 @@ import {
   Eye,
   Monitor,
   CheckCircle,
-  AlertCircle,
   MonitorSpeaker,
   HardDrive,
   Wifi,
@@ -142,15 +141,6 @@ const DesktopAppPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="hero-visual">
-              <div className="app-preview">
-                <div className="app-icon">
-                  <Monitor size={80} />
-                </div>
-                <h3>SkillEdge Desktop</h3>
-                <p>Version 1.0.0</p>
-              </div>
-            </div>
           </motion.div>
         </div>
       </section>
@@ -265,32 +255,6 @@ const DesktopAppPage: React.FC = () => {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Security Notice Section */}
-      <section className="security-section">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="security-card"
-          >
-            <div className="security-icon">
-              <AlertCircle size={32} />
-            </div>
-            <div className="security-content">
-              <h3 className="security-title">Security & Privacy</h3>
-              <p className="security-description">
-                SkillEdge Desktop uses advanced encryption and privacy
-                protection. Your interview data is never stored locally, and the
-                AI assistance is completely undetectable by standard screen
-                sharing tools. We prioritize your privacy and security above all
-                else.
-              </p>
-            </div>
-          </motion.div>
         </div>
       </section>
 

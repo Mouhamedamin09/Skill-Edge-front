@@ -61,6 +61,7 @@ const PlanSelectionPage: React.FC = () => {
         "All interview types",
         "Priority support",
         "Advanced analytics",
+        "Desktop App access",
       ],
     },
     {
@@ -78,6 +79,7 @@ const PlanSelectionPage: React.FC = () => {
         "24/7 priority support",
         "Team management",
         "Custom integrations",
+        "Desktop App access",
       ],
     },
   ];

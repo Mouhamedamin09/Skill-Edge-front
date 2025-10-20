@@ -21,7 +21,7 @@ const Navbar = () => {
       current: location.pathname === "/about",
     },
     {
-      name: "Desktop App",
+      name: "DeskApp",
       href: "/desktop-app",
       current: location.pathname === "/desktop-app",
     },
