@@ -166,8 +166,20 @@ const HomePage = () => {
                     const video = document.getElementById(
                       "demo-video"
                     ) as HTMLVideoElement;
+                    const videoSection = document.getElementById("video-section");
+                    
+                    if (videoSection) {
+                      videoSection.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                      });
+                    }
+                    
                     if (video) {
-                      video.play();
+                      // Small delay to ensure scroll completes
+                      setTimeout(() => {
+                        video.play();
+                      }, 500);
                     }
                   }}
                 >
@@ -179,6 +191,7 @@ const HomePage = () => {
 
           {/* Demo Video Section */}
           <motion.div
+            id="video-section"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -190,7 +203,7 @@ const HomePage = () => {
                 className="demo-video"
                 controls
                 preload="metadata"
-                poster="/api/placeholder/800/450"
+                poster=""
               >
                 <source src="/videos/skilledge-demo.mp4" type="video/mp4" />
                 Your browser does not support the video tag.

@@ -590,6 +590,16 @@ body {
   height: auto;
   display: block;
   border-radius: var(--border-radius-xl);
+  background: #000;
+}
+
+/* Show first frame as poster */
+.demo-video:not([poster]) {
+  object-fit: cover;
+}
+
+.demo-video[poster=""] {
+  object-fit: cover;
 }
 
 .video-overlay {
