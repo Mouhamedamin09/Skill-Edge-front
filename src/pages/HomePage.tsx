@@ -192,10 +192,7 @@ const HomePage = () => {
                 preload="metadata"
                 poster="/api/placeholder/800/450"
               >
-                <source
-                  src="/videos/skilledge-demo.mp4"
-                  type="video/mp4"
-                />
+                <source src="/videos/skilledge-demo.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
               <div
