@@ -17,6 +17,7 @@ import PlanSelectionPage from "./pages/PlanSelectionPage";
 // Dashboard Pages
 import DashboardHome from "./pages/dashboard/DashboardHome";
 import InterviewPage from "./pages/dashboard/InterviewPage";
+import DesktopPage from "./pages/dashboard/DesktopPage";
 import BillingPage from "./pages/dashboard/BillingPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
 import InterviewSession from "./pages/dashboard/InterviewSession";
@@ -54,6 +55,16 @@ function App() {
                   <ProtectedRoute>
                     <DashboardLayout>
                       <InterviewPage />
+                    </DashboardLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard/desktop"
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout>
+                      <DesktopPage />
                     </DashboardLayout>
                   </ProtectedRoute>
                 }

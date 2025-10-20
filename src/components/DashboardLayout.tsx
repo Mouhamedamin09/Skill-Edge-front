@@ -9,6 +9,7 @@ import {
   X,
   LogOut,
   User,
+  Monitor,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -34,6 +35,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: Home },
     { name: "Interview", href: "/dashboard/interview", icon: Mic },
+    { name: "Desktop App", href: "/dashboard/desktop", icon: Monitor },
     { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];

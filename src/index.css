@@ -9190,3 +9190,163 @@ select {
     font-size: 0.85rem;
   }
 }
+
+/* Desktop App Promotion Styles */
+.desktop-app-promotion {
+  margin: 2rem 0;
+}
+
+.promotion-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.promotion-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+.promotion-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.promotion-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.promotion-text {
+  flex: 1;
+  color: white;
+}
+
+.promotion-text h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.promotion-text p {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.promotion-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+}
+
+.promotion-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.promotion-button:active {
+  transform: translateY(0);
+}
+
+/* Mobile Responsiveness for Desktop App Promotion */
+@media (max-width: 768px) {
+  .desktop-app-promotion {
+    margin: 1.5rem 0;
+  }
+
+  .promotion-card {
+    padding: 1.5rem;
+  }
+
+  .promotion-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .promotion-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .promotion-text h3 {
+    font-size: 1.25rem;
+  }
+
+  .promotion-text p {
+    font-size: 0.9rem;
+  }
+
+  .promotion-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .promotion-card {
+    padding: 1.25rem;
+  }
+
+  .promotion-content {
+    gap: 0.875rem;
+  }
+
+  .promotion-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .promotion-text h3 {
+    font-size: 1.1rem;
+  }
+
+  .promotion-text p {
+    font-size: 0.85rem;
+  }
+
+  .promotion-button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}

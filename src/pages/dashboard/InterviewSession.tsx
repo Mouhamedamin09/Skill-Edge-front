@@ -148,12 +148,14 @@ const InterviewSession: React.FC = () => {
         if (newSessionMinutes > lastMinuteUpdate && newSessionMinutes > 0) {
           const minutesToUpdate = newSessionMinutes - lastMinuteUpdate;
           console.log(`🕐 Real-time update: ${minutesToUpdate} minute(s) used`);
-          
+
           setIsUpdatingMinutes(true);
           try {
             await updateUserMinutes(minutesToUpdate);
             setLastMinuteUpdate(newSessionMinutes);
-            console.log(`✅ Successfully updated ${minutesToUpdate} minute(s) to backend`);
+            console.log(
+              `✅ Successfully updated ${minutesToUpdate} minute(s) to backend`
+            );
           } catch (error) {
             console.error("Failed to update minutes in real-time:", error);
           } finally {
@@ -163,11 +165,16 @@ const InterviewSession: React.FC = () => {
 
         // Check if user has run out of minutes (for non-unlimited plans)
         if (!isUnlimited()) {
-          const currentRemaining = Math.max(0, remainingMinutes - newSessionMinutes);
+          const currentRemaining = Math.max(
+            0,
+            remainingMinutes - newSessionMinutes
+          );
           if (currentRemaining <= 0) {
             console.log("⏰ Time limit reached! Stopping recording.");
             stopRecording();
-            setError("Time is up! No minutes left. Please upgrade your plan to continue.");
+            setError(
+              "Time is up! No minutes left. Please upgrade your plan to continue."
+            );
           }
         }
       }, 1000); // Update every second
