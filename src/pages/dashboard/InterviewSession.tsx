@@ -124,6 +124,31 @@ const InterviewSession: React.FC = () => {
         const updatedUser = await response.json();
         console.log("User minutes updated successfully:", updatedUser);
         setUser(updatedUser);
+
+        // Recalculate remaining minutes after user update
+        const rawMinutesLeft = Number(
+          updatedUser.subscription?.minutesLeft ?? 0
+        );
+        const isUnlimited =
+          rawMinutesLeft === -1 || updatedUser.subscription?.plan === "pro+";
+        const minutesUsed = Math.max(
+          0,
+          Number(updatedUser.usage?.totalMinutesUsed || 0)
+        );
+
+        let derivedMinutesLeft;
+        if (isUnlimited) {
+          derivedMinutesLeft = -1;
+        } else if (updatedUser.subscription?.plan === "free") {
+          // For free plan, remaining minutes = 5 - used minutes
+          derivedMinutesLeft = Math.max(0, 5 - minutesUsed);
+        } else {
+          // For pro plan, remaining minutes = rawMinutesLeft
+          derivedMinutesLeft = Math.max(0, rawMinutesLeft);
+        }
+
+        setRemainingMinutes(derivedMinutesLeft);
+        console.log("Recalculated remaining minutes:", derivedMinutesLeft);
       } else {
         console.error("Failed to update user minutes:", response.status);
       }
@@ -153,6 +178,7 @@ const InterviewSession: React.FC = () => {
           try {
             await updateUserMinutes(minutesToUpdate);
             setLastMinuteUpdate(newSessionMinutes);
+
             console.log(
               `✅ Successfully updated ${minutesToUpdate} minute(s) to backend`
             );
@@ -165,11 +191,8 @@ const InterviewSession: React.FC = () => {
 
         // Check if user has run out of minutes (for non-unlimited plans)
         if (!isUnlimited()) {
-          const currentRemaining = Math.max(
-            0,
-            remainingMinutes - newSessionMinutes
-          );
-          if (currentRemaining <= 0) {
+          // Use the updated remaining minutes from state
+          if (remainingMinutes <= 0) {
             console.log("⏰ Time limit reached! Stopping recording.");
             stopRecording();
             setError(
