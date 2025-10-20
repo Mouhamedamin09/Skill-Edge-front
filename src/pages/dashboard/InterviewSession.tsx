@@ -416,15 +416,8 @@ const InterviewSession: React.FC = () => {
         );
       }
 
-      // Estimate and clamp consumption before processing
-      let approxSeconds = Math.max(1, Math.round(audioBlob.size / 4096));
-      const currentLeft = Number(user?.subscription?.minutesLeft ?? 0);
-      const isUnlimitedNow =
-        currentLeft === -1 || user?.subscription?.plan === "pro+";
-      if (!isUnlimitedNow) {
-        const remainingSeconds = Math.max(0, Math.floor(currentLeft * 60));
-        approxSeconds = Math.min(approxSeconds, remainingSeconds);
-      }
+      // Note: Time consumption is handled by continuous session tracking
+      // No need to calculate approxSeconds for minute consumption
 
       const transcription = await transcribeAudio(audioBlob);
       const text = (transcription || "").trim();
@@ -469,30 +462,8 @@ const InterviewSession: React.FC = () => {
       }
       setStatus("Complete! Press SPACE to record again");
 
-      // Report consumption to backend and refresh user
-      try {
-        const API_BASE_URL =
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-        const res = await fetch(`${API_BASE_URL}/usage/consume`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ seconds: approxSeconds }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.user) setUser(data.user);
-          // DISABLED: Time-out error to prevent false errors
-          // if (
-          //   !data?.isUnlimited &&
-          //   data?.user?.subscription?.minutesLeft === 0
-          // ) {
-          //   setError("Time is out. No minutes left.");
-          // }
-        }
-      } catch {}
+      // Note: Minutes are already consumed by the continuous session tracking
+      // No need to consume additional minutes here to avoid double-counting
     } catch (err: any) {
       setError(err.message || "Processing failed");
       setStatus("Processing failed");
