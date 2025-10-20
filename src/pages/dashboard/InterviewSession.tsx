@@ -503,7 +503,6 @@ const InterviewSession: React.FC = () => {
         : "English";
 
     const finalUserName = userName || "the candidate";
-    console.log("generateResponse - finalUserName:", finalUserName);
     const systemPrompt = `You are a real person in a job interview. Your name is ${finalUserName}. You MUST respond ONLY in ${languageName}. Answer the interviewer's question naturally and conversationally, like a human would.
 
 CRITICAL: Respond ONLY in ${languageName}. If the interviewer asks in another language, still respond in ${languageName}.
