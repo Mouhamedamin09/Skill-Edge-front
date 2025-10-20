@@ -77,18 +77,20 @@ const InterviewSession: React.FC = () => {
   useEffect(() => {
     if (!state) navigate("/dashboard/interview");
 
-    // Use minutesLeft directly from the database
-    const minutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
-    const isUnlimited = minutesLeft === -1;
+    // Only set minutes if user data is loaded
+    if (user?.subscription) {
+      const minutesLeft = Number(user.subscription.minutesLeft ?? 0);
+      const isUnlimited = minutesLeft === -1;
 
-    console.log(
-      "Initial calculation - plan:",
-      user?.subscription?.plan,
-      "minutesLeft:",
-      minutesLeft
-    );
-    setRemainingMinutes(minutesLeft);
-    setCanRecord(isUnlimited || minutesLeft > 0);
+      console.log(
+        "Initial calculation - plan:",
+        user.subscription.plan,
+        "minutesLeft:",
+        minutesLeft
+      );
+      setRemainingMinutes(minutesLeft);
+      setCanRecord(isUnlimited || minutesLeft > 0);
+    }
   }, [user, state, navigate]);
 
   // Update user minutes on server
@@ -234,24 +236,14 @@ const InterviewSession: React.FC = () => {
       });
       streamRef.current = stream;
 
-      // Get current minutes from backend
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/auth/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        if (response.ok) {
-          const userData = await response.json();
-          const minutesLeft = Number(userData.subscription?.minutesLeft ?? 0);
-          setRemainingMinutes(minutesLeft);
-          console.log("Got current minutes from backend:", minutesLeft);
-        }
-      } catch (error) {
-        console.error("Failed to get current minutes:", error);
+      // Use current user data (no API call needed)
+      console.log("User data when starting screen capture:", user);
+      if (user?.subscription) {
+        const minutesLeft = Number(user.subscription.minutesLeft ?? 0);
+        setRemainingMinutes(minutesLeft);
+        console.log("Using current minutes from user context:", minutesLeft);
+      } else {
+        console.error("User subscription data not available!");
       }
 
       // Start time tracking
