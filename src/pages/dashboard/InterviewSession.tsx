@@ -77,31 +77,18 @@ const InterviewSession: React.FC = () => {
   useEffect(() => {
     if (!state) navigate("/dashboard/interview");
 
-    // Calculate initial remaining minutes
-    const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
-    const isUnlimited =
-      rawMinutesLeft === -1 || user?.subscription?.plan === "pro+";
-    const minutesUsed = Math.max(0, Number(user?.usage?.totalMinutesUsed || 0));
-
-    let derivedMinutesLeft;
-    if (isUnlimited) {
-      derivedMinutesLeft = -1;
-    } else if (user?.subscription?.plan === "free") {
-      // For free plan, remaining minutes = 5 - used minutes
-      derivedMinutesLeft = Math.max(0, 5 - minutesUsed);
-    } else {
-      // For pro plan, remaining minutes = rawMinutesLeft
-      derivedMinutesLeft = Math.max(0, rawMinutesLeft);
-    }
+    // Use minutesLeft directly from the database
+    const minutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
+    const isUnlimited = minutesLeft === -1;
 
     console.log(
       "Initial calculation - plan:",
       user?.subscription?.plan,
-      "remaining:",
-      derivedMinutesLeft
+      "minutesLeft:",
+      minutesLeft
     );
-    setRemainingMinutes(derivedMinutesLeft);
-    setCanRecord(isUnlimited || derivedMinutesLeft > 0);
+    setRemainingMinutes(minutesLeft);
+    setCanRecord(isUnlimited || minutesLeft > 0);
   }, [user, state, navigate]);
 
   // Update user minutes on server
@@ -125,30 +112,10 @@ const InterviewSession: React.FC = () => {
         console.log("User minutes updated successfully:", updatedUser);
         setUser(updatedUser);
 
-        // Recalculate remaining minutes after user update
-        const rawMinutesLeft = Number(
-          updatedUser.subscription?.minutesLeft ?? 0
-        );
-        const isUnlimited =
-          rawMinutesLeft === -1 || updatedUser.subscription?.plan === "pro+";
-        const minutesUsed = Math.max(
-          0,
-          Number(updatedUser.usage?.totalMinutesUsed || 0)
-        );
-
-        let derivedMinutesLeft;
-        if (isUnlimited) {
-          derivedMinutesLeft = -1;
-        } else if (updatedUser.subscription?.plan === "free") {
-          // For free plan, remaining minutes = 5 - used minutes
-          derivedMinutesLeft = Math.max(0, 5 - minutesUsed);
-        } else {
-          // For pro plan, remaining minutes = rawMinutesLeft
-          derivedMinutesLeft = Math.max(0, rawMinutesLeft);
-        }
-
-        setRemainingMinutes(derivedMinutesLeft);
-        console.log("Recalculated remaining minutes:", derivedMinutesLeft);
+        // Update remaining minutes from the backend response
+        const minutesLeft = Number(updatedUser.subscription?.minutesLeft ?? 0);
+        setRemainingMinutes(minutesLeft);
+        console.log("Updated remaining minutes from backend:", minutesLeft);
       } else {
         console.error("Failed to update user minutes:", response.status);
       }
@@ -225,8 +192,8 @@ const InterviewSession: React.FC = () => {
   // }, [isRecording, remainingMinutes]);
 
   const isUnlimited = () => {
-    const rawMinutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
-    return rawMinutesLeft === -1 || user?.subscription?.plan === "pro+";
+    const minutesLeft = Number(user?.subscription?.minutesLeft ?? 0);
+    return minutesLeft === -1;
   };
 
   useEffect(() => {
