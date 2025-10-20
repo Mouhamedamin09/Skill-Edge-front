@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import PricingPage from "./pages/PricingPage";
 import AboutPage from "./pages/AboutPage";
+import DesktopAppPage from "./pages/DesktopAppPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
 import PlanSelectionPage from "./pages/PlanSelectionPage";
 
@@ -34,6 +35,7 @@ function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/desktop-app" element={<DesktopAppPage />} />
               <Route path="/verify-email" element={<EmailVerificationPage />} />
               <Route path="/plan-selection" element={<PlanSelectionPage />} />
 

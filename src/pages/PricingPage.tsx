@@ -9,9 +9,6 @@ import {
   Star,
   Users,
   Shield,
-  Monitor,
-  Download,
-  Eye,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -234,66 +231,6 @@ const PricingPage: React.FC = () => {
                 </motion.div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Desktop App Section */}
-      <section className="desktop-app-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">SkillEdge Desktop App</h2>
-            <p className="section-subtitle">
-              Download our undetectable desktop application for seamless AI
-              assistance during screen sharing interviews
-            </p>
-          </div>
-
-          <div className="desktop-app-content">
-            <div className="desktop-app-card">
-              <div className="desktop-app-preview">
-                <div className="app-icon">
-                  <Monitor size={48} />
-                </div>
-                <h3>SkillEdge Desktop</h3>
-                <p>Version 1.0.0</p>
-              </div>
-
-              <div className="desktop-app-features">
-                <div className="feature-item">
-                  <Shield size={20} />
-                  <span>Undetectable AI</span>
-                </div>
-                <div className="feature-item">
-                  <Eye size={20} />
-                  <span>Screen Share Safe</span>
-                </div>
-                <div className="feature-item">
-                  <Zap size={20} />
-                  <span>Real-time Assistance</span>
-                </div>
-              </div>
-
-              <div className="desktop-app-download">
-                <button
-                  onClick={() => {
-                    const link = document.createElement("a");
-                    link.href =
-                      "https://skilledgespace.fra1.digitaloceanspaces.com/SkillEdge%20Desktop%20Setup%201.0.0.exe";
-                    link.download = "SkillEdge Desktop Setup 1.0.0.exe";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }}
-                  className="download-button"
-                >
-                  <Download size={20} />
-                  Download Desktop App
-                </button>
-                <p className="download-info">File size: ~80MB • Windows 10+</p>
-                <p className="access-note">Pro/Pro+ account required to use</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
