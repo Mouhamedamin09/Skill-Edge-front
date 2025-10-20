@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -19,6 +19,26 @@ import { useNavigate } from "react-router-dom";
 const HomePage = () => {
   const navigate = useNavigate();
   const [showInterviewTypes, setShowInterviewTypes] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
+  useEffect(() => {
+    const video = document.getElementById("demo-video") as HTMLVideoElement;
+    if (video) {
+      const handlePlay = () => setIsVideoPlaying(true);
+      const handlePause = () => setIsVideoPlaying(false);
+      const handleEnded = () => setIsVideoPlaying(false);
+
+      video.addEventListener("play", handlePlay);
+      video.addEventListener("pause", handlePause);
+      video.addEventListener("ended", handleEnded);
+
+      return () => {
+        video.removeEventListener("play", handlePlay);
+        video.removeEventListener("pause", handlePause);
+        video.removeEventListener("ended", handleEnded);
+      };
+    }
+  }, []);
 
   const interviewTypes = [
     {
@@ -142,12 +162,58 @@ const HomePage = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="btn-outline"
+                  onClick={() => {
+                    const video = document.getElementById(
+                      "demo-video"
+                    ) as HTMLVideoElement;
+                    if (video) {
+                      video.play();
+                    }
+                  }}
                 >
                   Watch Demo
                 </motion.button>
               </div>
             </motion.div>
           </div>
+
+          {/* Demo Video Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="hero-video-container"
+          >
+            <div className="video-wrapper">
+              <video
+                id="demo-video"
+                className="demo-video"
+                controls
+                preload="metadata"
+                poster="/api/placeholder/800/450"
+              >
+                <source src="/videos/skilledge-demo.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <div
+                className={`video-overlay ${isVideoPlaying ? "playing" : ""}`}
+              >
+                <div
+                  className="play-button"
+                  onClick={() => {
+                    const video = document.getElementById(
+                      "demo-video"
+                    ) as HTMLVideoElement;
+                    if (video) {
+                      video.play();
+                    }
+                  }}
+                >
+                  <div className="play-icon">▶</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
