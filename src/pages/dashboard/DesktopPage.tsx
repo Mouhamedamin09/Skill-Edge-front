@@ -197,7 +197,7 @@ const DesktopPage: React.FC = () => {
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-500">
-                  File size: ~15MB • Version 1.0.0
+                  File size: ~80MB • Version 1.0.0
                 </p>
               </div>
             </div>

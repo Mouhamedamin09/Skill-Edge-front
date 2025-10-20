@@ -2192,11 +2192,7 @@ body {
 
 /* Footer Styles */
 .footer {
-  background: linear-gradient(
-    135deg,
-    var(--secondary-900) 0%,
-    var(--secondary-800) 100%
-  );
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
   color: white;
   padding: 6rem 0 2rem;
   position: relative;
@@ -2243,7 +2239,7 @@ body {
 }
 
 .footer-description {
-  color: var(--secondary-300);
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.7;
   margin-bottom: 2rem;
   font-size: var(--font-size-base);
@@ -2259,7 +2255,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: var(--secondary-300);
+  color: rgba(255, 255, 255, 0.8);
   font-size: var(--font-size-sm);
   transition: color var(--transition-fast);
 }
@@ -2292,7 +2288,7 @@ body {
 }
 
 .footer-section a {
-  color: var(--secondary-300);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   font-size: var(--font-size-sm);
   line-height: 1.5;
@@ -2307,7 +2303,7 @@ body {
 }
 
 .footer-bottom {
-  border-top: 1px solid var(--secondary-700);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding: 2rem 2rem 0;
   display: flex;
   justify-content: space-between;
@@ -2317,7 +2313,7 @@ body {
 }
 
 .footer-copyright {
-  color: var(--secondary-400);
+  color: rgba(255, 255, 255, 0.7);
   font-size: var(--font-size-sm);
   margin: 0;
 }
@@ -2333,9 +2329,9 @@ body {
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: var(--secondary-800);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
-  color: var(--secondary-300);
+  color: rgba(255, 255, 255, 0.8);
   transition: all var(--transition-fast);
   text-decoration: none;
 }
@@ -6584,7 +6580,6 @@ body {
 .about-section,
 .pricing-section,
 .plan-selection-section,
-.footer,
 .auth-page {
   background: var(--bg-primary);
 }
@@ -7684,26 +7679,23 @@ tr:hover {
 }
 
 /* Footer */
-.footer {
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border-color);
-}
+/* Footer background is handled above with blue gradient */
 
 .footer-title {
-  color: var(--text-primary);
+  color: white;
 }
 
 .footer-link {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .footer-link:hover {
-  color: var(--primary-500);
+  color: white;
 }
 
 .footer-bottom {
-  border-top: 1px solid var(--border-color);
-  color: var(--text-secondary);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Badges and Tags */
@@ -9347,6 +9339,165 @@ select {
 
   .promotion-button {
     padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Desktop App Section Styles */
+.desktop-app-section {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.desktop-app-content {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.desktop-app-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid #e2e8f0;
+}
+
+.desktop-app-preview {
+  margin-bottom: 2rem;
+}
+
+.app-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+}
+
+.desktop-app-preview h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 0.5rem 0;
+}
+
+.desktop-app-preview p {
+  color: #718096;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.desktop-app-features {
+  display: flex;
+  justify-content: space-around;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.desktop-app-features .feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.desktop-app-download {
+  margin-top: 2rem;
+}
+
+.download-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 auto;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.download-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.download-button:active {
+  transform: translateY(0);
+}
+
+.download-info {
+  color: #718096;
+  font-size: 0.85rem;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.access-note {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Mobile Responsiveness for Desktop App Section */
+@media (max-width: 768px) {
+  .desktop-app-section {
+    padding: 3rem 0;
+  }
+
+  .desktop-app-card {
+    padding: 2rem;
+    margin: 0 1rem;
+  }
+
+  .desktop-app-features {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .download-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .desktop-app-section {
+    padding: 2rem 0;
+  }
+
+  .desktop-app-card {
+    padding: 1.5rem;
+  }
+
+  .app-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .desktop-app-preview h3 {
+    font-size: 1.25rem;
+  }
+
+  .download-button {
+    padding: 0.875rem 1.5rem;
     font-size: 0.9rem;
   }
 }
