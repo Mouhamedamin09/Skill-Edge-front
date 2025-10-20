@@ -7011,6 +7011,17 @@ tr:hover {
   border-color: rgba(251, 191, 36, 0.3);
 }
 
+/* Real-time updating indicator */
+.updating-indicator {
+  margin-left: 8px;
+  font-size: 12px;
+  opacity: 0.8;
+  animation: pulse 1s infinite;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Video Wrapper */
 .video-wrap {
   background: var(--bg-tertiary);

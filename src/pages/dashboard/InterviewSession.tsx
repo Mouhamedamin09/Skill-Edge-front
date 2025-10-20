@@ -63,6 +63,8 @@ const InterviewSession: React.FC = () => {
   const [recordingStartTime, setRecordingStartTime] = useState<number | null>(
     null
   );
+  const [lastMinuteUpdate, setLastMinuteUpdate] = useState(0);
+  const [isUpdatingMinutes, setIsUpdatingMinutes] = useState(false);
 
   const streamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -130,10 +132,10 @@ const InterviewSession: React.FC = () => {
     }
   };
 
-  // Time tracking effect - only track when recording
+  // Real-time minute tracking - updates backend every minute
   useEffect(() => {
-    if (isRecording && sessionStartTime && !isUnlimited()) {
-      timeTrackerRef.current = window.setInterval(() => {
+    if (isRecording && sessionStartTime) {
+      timeTrackerRef.current = window.setInterval(async () => {
         const now = Date.now();
         const elapsedMinutes = Math.floor(
           (now - sessionStartTime) / (1000 * 60)
@@ -142,7 +144,32 @@ const InterviewSession: React.FC = () => {
 
         setSessionMinutesUsed(newSessionMinutes);
 
-        // console.log("Time tracking - sessionMinutesUsed:", newSessionMinutes);
+        // Update backend every minute (not just at session end)
+        if (newSessionMinutes > lastMinuteUpdate && newSessionMinutes > 0) {
+          const minutesToUpdate = newSessionMinutes - lastMinuteUpdate;
+          console.log(`🕐 Real-time update: ${minutesToUpdate} minute(s) used`);
+          
+          setIsUpdatingMinutes(true);
+          try {
+            await updateUserMinutes(minutesToUpdate);
+            setLastMinuteUpdate(newSessionMinutes);
+            console.log(`✅ Successfully updated ${minutesToUpdate} minute(s) to backend`);
+          } catch (error) {
+            console.error("Failed to update minutes in real-time:", error);
+          } finally {
+            setIsUpdatingMinutes(false);
+          }
+        }
+
+        // Check if user has run out of minutes (for non-unlimited plans)
+        if (!isUnlimited()) {
+          const currentRemaining = Math.max(0, remainingMinutes - newSessionMinutes);
+          if (currentRemaining <= 0) {
+            console.log("⏰ Time limit reached! Stopping recording.");
+            stopRecording();
+            setError("Time is up! No minutes left. Please upgrade your plan to continue.");
+          }
+        }
       }, 1000); // Update every second
     }
 
@@ -151,7 +178,7 @@ const InterviewSession: React.FC = () => {
         clearInterval(timeTrackerRef.current);
       }
     };
-  }, [isRecording, sessionStartTime, user]);
+  }, [isRecording, sessionStartTime, remainingMinutes, lastMinuteUpdate, user]);
 
   // Check if recording should be stopped due to time limit - DISABLED
   // useEffect(() => {
@@ -221,6 +248,7 @@ const InterviewSession: React.FC = () => {
       // Start time tracking
       setSessionStartTime(Date.now());
       setSessionMinutesUsed(0);
+      setLastMinuteUpdate(0);
 
       setTimeout(() => {
         if (videoRef.current) {
@@ -254,22 +282,14 @@ const InterviewSession: React.FC = () => {
       timeTrackerRef.current = null;
     }
 
-    // Update user minutes with final session time
-    if (sessionStartTime && sessionMinutesUsed > 0) {
-      console.log(
-        `Stopping screen capture - updating ${sessionMinutesUsed} minutes`
-      );
-      updateUserMinutes(sessionMinutesUsed);
-    } else {
-      console.log("No session time to update:", {
-        sessionStartTime,
-        sessionMinutesUsed,
-      });
-    }
+    // Note: Minutes are already updated in real-time every minute
+    // No need to update again at session end to avoid double-counting
+    console.log(`Session ended. Total minutes used: ${sessionMinutesUsed}`);
 
     // Clear time tracking state
     setSessionStartTime(null);
     setSessionMinutesUsed(0);
+    setLastMinuteUpdate(0);
 
     setStatus("Screen capture stopped");
   };
@@ -825,6 +845,11 @@ Instructions:
                       }`}
                     >
                       Status: {status}
+                      {isUpdatingMinutes && (
+                        <span className="updating-indicator">
+                          🔄 Updating minutes...
+                        </span>
+                      )}
                     </div>
                     {error && <div className="message error">{error}</div>}
                     <div className="video-wrap">

@@ -166,15 +166,16 @@ const HomePage = () => {
                     const video = document.getElementById(
                       "demo-video"
                     ) as HTMLVideoElement;
-                    const videoSection = document.getElementById("video-section");
-                    
+                    const videoSection =
+                      document.getElementById("video-section");
+
                     if (videoSection) {
-                      videoSection.scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'center'
+                      videoSection.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
                       });
                     }
-                    
+
                     if (video) {
                       // Small delay to ensure scroll completes
                       setTimeout(() => {
