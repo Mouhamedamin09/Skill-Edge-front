@@ -8,7 +8,7 @@ import {
   Monitor,
   CheckCircle,
   AlertCircle,
-  Windows,
+  MonitorSpeaker,
   HardDrive,
   Wifi,
   Users,
@@ -50,7 +50,7 @@ const DesktopAppPage: React.FC = () => {
 
   const systemRequirements = [
     {
-      icon: <Windows size={24} />,
+      icon: <MonitorSpeaker size={24} />,
       requirement: "Windows 10 or later",
       description: "Compatible with Windows 10, 11, and future versions",
     },
