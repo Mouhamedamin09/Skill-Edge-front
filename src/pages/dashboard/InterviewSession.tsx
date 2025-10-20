@@ -124,7 +124,7 @@ const InterviewSession: React.FC = () => {
     }
   };
 
-  // Real-time minute tracking - updates backend every minute
+  // Simple minute tracking - send 1 minute to backend every minute
   useEffect(() => {
     if (isRecording && sessionStartTime) {
       timeTrackerRef.current = window.setInterval(async () => {
@@ -132,42 +132,34 @@ const InterviewSession: React.FC = () => {
         const elapsedMinutes = Math.floor(
           (now - sessionStartTime) / (1000 * 60)
         );
-        const newSessionMinutes = Math.max(0, elapsedMinutes);
 
-        setSessionMinutesUsed(newSessionMinutes);
+        setSessionMinutesUsed(elapsedMinutes);
 
-        // Update backend every minute (not just at session end)
-        if (newSessionMinutes > lastMinuteUpdate && newSessionMinutes > 0) {
-          const minutesToUpdate = newSessionMinutes - lastMinuteUpdate;
-          console.log(`🕐 Real-time update: ${minutesToUpdate} minute(s) used`);
+        // Send 1 minute to backend every minute
+        if (elapsedMinutes > lastMinuteUpdate) {
+          console.log(`🕐 Sending 1 minute to backend`);
 
           setIsUpdatingMinutes(true);
           try {
-            await updateUserMinutes(minutesToUpdate);
-            setLastMinuteUpdate(newSessionMinutes);
-
-            console.log(
-              `✅ Successfully updated ${minutesToUpdate} minute(s) to backend`
-            );
+            await updateUserMinutes(1); // Always send exactly 1 minute
+            setLastMinuteUpdate(elapsedMinutes);
+            console.log(`✅ Successfully sent 1 minute to backend`);
           } catch (error) {
-            console.error("Failed to update minutes in real-time:", error);
+            console.error("Failed to update minutes:", error);
           } finally {
             setIsUpdatingMinutes(false);
           }
         }
 
-        // Check if user has run out of minutes (for non-unlimited plans)
-        if (!isUnlimited()) {
-          // Use the updated remaining minutes from state
-          if (remainingMinutes <= 0) {
-            console.log("⏰ Time limit reached! Stopping recording.");
-            stopRecording();
-            setError(
-              "Time is up! No minutes left. Please upgrade your plan to continue."
-            );
-          }
+        // Check if time is up (backend will return 0 minutesLeft)
+        if (remainingMinutes <= 0) {
+          console.log("⏰ Time limit reached! Stopping recording.");
+          stopRecording();
+          setError(
+            "Time is up! No minutes left. Please upgrade your plan to continue."
+          );
         }
-      }, 1000); // Update every second
+      }, 1000); // Check every second
     }
 
     return () => {
@@ -175,7 +167,7 @@ const InterviewSession: React.FC = () => {
         clearInterval(timeTrackerRef.current);
       }
     };
-  }, [isRecording, sessionStartTime, remainingMinutes, lastMinuteUpdate, user]);
+  }, [isRecording, sessionStartTime, remainingMinutes, lastMinuteUpdate]);
 
   // Check if recording should be stopped due to time limit - DISABLED
   // useEffect(() => {
@@ -241,6 +233,26 @@ const InterviewSession: React.FC = () => {
         audio: true,
       });
       streamRef.current = stream;
+
+      // Get current minutes from backend
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/auth/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const userData = await response.json();
+          const minutesLeft = Number(userData.subscription?.minutesLeft ?? 0);
+          setRemainingMinutes(minutesLeft);
+          console.log("Got current minutes from backend:", minutesLeft);
+        }
+      } catch (error) {
+        console.error("Failed to get current minutes:", error);
+      }
 
       // Start time tracking
       setSessionStartTime(Date.now());
