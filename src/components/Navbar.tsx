@@ -20,6 +20,11 @@ const Navbar = () => {
       href: "/about",
       current: location.pathname === "/about",
     },
+    {
+      name: "Desktop App",
+      href: "/desktop-app",
+      current: location.pathname === "/desktop-app",
+    },
   ];
 
   return (

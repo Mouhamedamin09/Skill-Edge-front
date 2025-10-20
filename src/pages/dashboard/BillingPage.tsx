@@ -13,7 +13,6 @@ import {
   Loader2,
   QrCode,
   Banknote,
-  Monitor,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -481,39 +480,6 @@ const BillingPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Desktop App Promotion - Only for Pro/Pro+ users */}
-      {(user.subscription.plan === "pro" ||
-        user.subscription.plan === "pro+") && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="desktop-app-promotion"
-        >
-          <div className="promotion-card">
-            <div className="promotion-content">
-              <div className="promotion-icon">
-                <Monitor size={32} />
-              </div>
-              <div className="promotion-text">
-                <h3>SkillEdge Desktop App</h3>
-                <p>
-                  Download our undetectable desktop application for seamless AI
-                  assistance during screen sharing interviews.
-                </p>
-              </div>
-              <button
-                onClick={() => navigate("/dashboard/desktop")}
-                className="promotion-button"
-              >
-                Download Now
-                <ArrowRight size={16} />
-              </button>
             </div>
           </div>
         </motion.div>

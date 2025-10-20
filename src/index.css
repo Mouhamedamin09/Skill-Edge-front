@@ -9509,9 +9509,9 @@ select {
 }
 
 .desktop-app-page .hero-section {
-  padding: 8rem 0 6rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: 6rem 0 4rem;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   position: relative;
   overflow: hidden;
 }
@@ -9523,7 +9523,7 @@ select {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23e2e8f0" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
   opacity: 0.3;
 }
 
@@ -9541,13 +9541,14 @@ select {
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
+  color: var(--text-primary);
 }
 
 .desktop-app-page .hero-description {
   font-size: 1.25rem;
   line-height: 1.6;
   margin-bottom: 2.5rem;
-  opacity: 0.9;
+  color: var(--text-secondary);
 }
 
 .desktop-app-page .hero-actions {
@@ -9565,11 +9566,11 @@ select {
 .desktop-app-page .download-info p {
   margin: 0;
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: var(--text-secondary);
 }
 
 .desktop-app-page .access-note {
-  color: #fbbf24;
+  color: var(--warning-600);
   font-weight: 600;
 }
 
@@ -9580,35 +9581,35 @@ select {
 }
 
 .desktop-app-page .app-preview {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 2rem;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-xl);
   padding: 3rem;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
 }
 
 .desktop-app-page .app-icon {
   width: 120px;
   height: 120px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 1.5rem;
+  background: var(--primary-50);
+  border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.5rem;
-  color: white;
+  color: var(--primary-600);
 }
 
 .desktop-app-page .app-preview h3 {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  color: white;
+  color: var(--text-primary);
 }
 
 .desktop-app-page .app-preview p {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -9715,8 +9716,8 @@ select {
 /* CTA Section */
 .desktop-app-page .cta-section {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   text-align: center;
 }
 
@@ -9724,12 +9725,13 @@ select {
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0 0 1rem 0;
+  color: var(--text-primary);
 }
 
 .desktop-app-page .cta-description {
   font-size: 1.25rem;
   margin: 0 0 2.5rem 0;
-  opacity: 0.9;
+  color: var(--text-secondary);
 }
 
 .desktop-app-page .btn-large {
